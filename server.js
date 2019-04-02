@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const cors = require('cors');
-const  router = express.Router();
+const router = express.Router();
 const PORT = process.env.PORT || 3000;
 
 
