@@ -1,0 +1,113 @@
+<mat-drawer-container class="example-container" >
+  <mat-drawer #drawer [mode]="true" class="example-sidenav-content">
+      <mat-toolbar color="primary"><span>Configuraciones</span></mat-toolbar>
+      <form  [formGroup]="form">
+      
+      <mat-form-field class="item-config">
+      <mat-label>Pais</mat-label>
+          <mat-select matNativeControl required [formControl]="pais" (selectionChange)="changePais($event)"> 
+            <mat-option value="argentina" selected>Argentina</mat-option>
+            <mat-option value="estados_Unidos">Estados Unidos</mat-option>
+            <mat-option value="brasil">Brasil</mat-option>
+            <mat-option value="chile">Chile</mat-option>
+            <mat-option value="colombia">Colombia</mat-option>
+            <mat-option value="mexico">Mexico</mat-option>
+          </mat-select>
+        <mat-error *ngIf="pais.hasError('required')">Campo Requerido</mat-error>
+        <mat-hint></mat-hint>
+      </mat-form-field>
+
+      <mat-form-field class="item-config">
+        <mat-label>Instrumento</mat-label>
+         <mat-select matNativeControl required [formControl]="instrumento" (selectionChange)="changeInstrumento($event)"> 
+            <mat-option *ngFor="let instrumento of instrumentos" [value]="instrumento.instrumento">
+              {{instrumento.instrumento}}
+            </mat-option>
+          </mat-select>
+        <mat-error *ngIf="instrumento.hasError('required')">Campo Requerido</mat-error>
+        <mat-hint></mat-hint>
+      </mat-form-field>
+
+      <mat-form-field class="item-config">
+        <mat-label>Panel</mat-label>
+         <mat-select matNativeControl required [formControl]="panel" (selectionChange)="changePanel($event)"> 
+            <mat-option *ngFor="let panel of paneles" [value]="panel.panel">
+              {{panel.panel}}
+            </mat-option>
+          </mat-select>
+        <mat-error *ngIf="panel.hasError('required')">Campo Requerido</mat-error>
+        <mat-hint></mat-hint>
+      </mat-form-field>
+
+      <mat-form-field class="item-config">
+        <mat-label>Mercado</mat-label>
+         <input matInput [formControl]="mercado" value="BCBA">
+         <mat-error *ngIf="!mercado.hasError('required')">Campo Requerido</mat-error>
+      </mat-form-field> 
+      
+      <mat-form-field class="item-config">
+        <mat-label>Activo</mat-label>
+         <mat-select matNativeControl required [formControl]="simbolo" (selectionChange)="changeTitulo($event)"> 
+            <mat-option *ngFor="let titulo of titulos" [value]="titulo.simbolo">
+              {{titulo.simbolo}}
+            </mat-option>
+          </mat-select>
+        <mat-error *ngIf="titulo.hasError('required')">Campo Requerido</mat-error>
+        <mat-hint><b>{{tituloLess.descripcion}}</b>  - ultimo precio: <b>{{tituloLess.ultimoPrecio}}</b></mat-hint>
+      </mat-form-field>
+
+      <mat-form-field class="item-config">
+          <mat-select matNativeControl required  [formControl]="tipoOpcion" (selectionChange)="changeTipoOpcion($event)"> 
+            <mat-option value="" selected></mat-option>
+            <mat-option value="Call">Call</mat-option>
+            <mat-option value="Put">Put</mat-option>
+          </mat-select>
+      </mat-form-field>
+
+      <mat-form-field class="item-config">
+        <mat-label>Opciones</mat-label>
+        <mat-select matNativeControl [(ngModel)]="opcionSelected" formControlName="opcionSelected" >
+        <mat-option value="" selected></mat-option>
+          <mat-option *ngFor="let o of opciones" [value]="o.simbolo" class="mat-option ng-star-inserted {{ o.tipoEjercicio }}">
+              {{o.descripcion}}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="opcionSelected==''">Campo Requerido</mat-error>
+        <mat-hint></mat-hint>
+      </mat-form-field>
+
+      <section >
+        <mat-form-field class="item-date">
+            <input matInput [matDatepicker]="picker1" placeholder="Desde" [formControl]="fechaDesde">
+            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field class="item-date">
+            <input matInput [matDatepicker]="picker2" placeholder="Hasta" [formControl]="fechaHasta">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+      </section>
+      <button mat-raised-button color="primary" (click)="buscarSerieHistorica()" class="item-config">Graficar</button>
+    </form>
+  </mat-drawer>
+  <mat-drawer-content>
+    <mat-toolbar color="primary">
+      <mat-icon class="mat-icon-rtl-mirror" (click)="drawer.toggle()">dehaze</mat-icon>
+    </mat-toolbar>
+
+
+    <div style="width:100%; text-align: left;">
+      <button mat-button color="primary" (click)="showDetail()">Detalle</button>
+      <button mat-button color="primary" (click)="showChart()">Grafico</button>
+      <button mat-button color="primary" (click)="logout()">Logout</button>
+    </div> 
+    <router-outlet></router-outlet>
+
+
+
+    
+  </mat-drawer-content>
+</mat-drawer-container>
+
+ 
