@@ -1,0 +1,12 @@
+{
+    "/token": {
+        "target": "https://api.invertironline.com",
+        "secure": false,
+        "changeOrigin": true
+    },
+    "/api/*": {
+        "target": "https://api.invertironline.com",
+        "secure": false,
+        "changeOrigin": true
+    }
+}
