@@ -14,8 +14,6 @@ export class PageLoginComponent implements OnInit {
   return: string;
   constructor(private router: Router, private service: RestService) {  }
   ngOnInit(): void {
-    this.username = "mpesalac12";
-    this.password = "AQswde12";
   }
 
   login() {
