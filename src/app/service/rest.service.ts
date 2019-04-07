@@ -8,8 +8,8 @@ import { TokenIOL } from '../model/model';
 })
 export class RestService {
 
-  //endpoint = "https://api.invertironline.com";  //PROD
-  endpoint = "https://api.invertironline.com";                              // LOCAL
+  // https://api.invertironline.com
+  endpoint = "https://api.invertironline.com";                            
   token: TokenIOL;
   serieHistorica: Array<Object>;
   constructor(private http: HttpClient) { }
