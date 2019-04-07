@@ -2,7 +2,7 @@ let express = require('express'),
 cors = require('cors'),
 os = require('os'),
 app = express(),
-const PORT = process.env.PORT || 4200;
+PORT = process.env.PORT || 4200;
  
 // hard coded configuration object
 conf = {
