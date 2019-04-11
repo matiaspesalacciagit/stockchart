@@ -88,7 +88,11 @@
             <mat-datepicker #picker2></mat-datepicker>
         </mat-form-field>
       </section>
+      <button mat-raised-button color="primary" (click)="buscarActivo()" class="item-config">Buscar</button>
+      <div style="padding: 5px;"></div>
       <button mat-raised-button color="primary" (click)="buscarSerieHistorica()" class="item-config">Graficar</button>
+      <div style="padding: 5px;"></div>
+      <button mat-raised-button style="color:red;" (click)="logout()" class="item-config">Cerrar Sesion</button>
     </form>
   </mat-drawer>
   <mat-drawer-content>
@@ -100,7 +104,7 @@
     <div style="width:100%; text-align: left;">
       <button mat-button color="primary" (click)="showDetail()">Detalle</button>
       <button mat-button color="primary" (click)="showChart()">Grafico</button>
-      <button mat-button color="primary" (click)="logout()">Logout</button>
+    
     </div> 
     <router-outlet></router-outlet>
 

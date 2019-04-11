@@ -9,8 +9,8 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./page-login.component.css']
 })
 export class PageLoginComponent implements OnInit {
-  username: string;
-  password: string;
+  username: string = "mpesalac12";
+  password: string = "AQswde12";
   return: string;
   constructor(private router: Router, private service: RestService) {  }
   ngOnInit(): void {
