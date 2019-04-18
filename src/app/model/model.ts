@@ -65,7 +65,7 @@ export interface PanelCotizacion{
     pais: string;
 }
 
-export interface Opciones{
+export interface Opcion{
 
     cotizacion: Cotizacion;
     simboloSubyacente: string;

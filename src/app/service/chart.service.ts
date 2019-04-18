@@ -1,30 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-
+import { Injectable } from '@angular/core';
 import * as am4core from "@amcharts/amcharts4/core";
 import * as am4charts from "@amcharts/amcharts4/charts";
 import am4themes_animated from "@amcharts/amcharts4/themes/animated";
-import { Router } from '@angular/router';
-import { RestService } from '../../service/rest.service';
-import { Cotizacion, Candle } from '../../model/model';
+import { Candle, Cotizacion } from '../model/model';
+import { RestService } from './rest.service';
 
-am4core.useTheme(am4themes_animated);
+//am4core.useTheme(am4themes_animated);
 
-@Component({
-  selector: 'app-page-chart',
-  templateUrl: './page-chart.component.html',
-  styleUrls: ['./page-chart.component.css']
+@Injectable({
+  providedIn: 'root'
 })
-export class PageChartComponent implements OnInit {
+export class ChartService {
+
   serieAjustada: Candle[] = [];
+  constructor(private service: RestService) { }
 
-  constructor(private service: RestService, private router: Router) { }
 
-  ngOnInit() {
-    this.normalizarVelas();
-    this.dibujarVelas();
-    this.dibujarVolumen();
-  }
- 
+  
   normalizarVelas(){
     let candle : Candle;
     this.service.serieHistorica.forEach((element, index) => {
@@ -74,6 +66,7 @@ export class PageChartComponent implements OnInit {
   }
 
   dibujarVelas() {
+    this.normalizarVelas();
     var chart = am4core.create("chartdiv", am4charts.XYChart);
     chart.dateFormatter.inputDateFormat = "yyyy-MM-dd";
 
@@ -93,20 +86,8 @@ export class PageChartComponent implements OnInit {
     //series.tooltipText = "Open: [bold]${openValueY.value}[/]\nLow: [bold]${lowValueY.value}[/]\nHigh: [bold]${highValueY.value}[/]\nClose: [bold]${valueY.value}[/]";
     series.tooltipText = "Open:${openValueY.value}\nLow:${lowValueY.value}\nHigh:${highValueY.value}\nClose:${valueY.value}";
     chart.cursor = new am4charts.XYCursor();
-
-    /*var lineSeries = chart.series.push(new am4charts.LineSeries());
-    lineSeries.dataFields.dateX = "date";
-    lineSeries.dataFields.valueY = "close";
-    lineSeries.defaultState.properties.visible = false;
-    lineSeries.hiddenInLegend = true;
-    lineSeries.fillOpacity = 0;
-    lineSeries.strokeOpacity = 0;
-    
-    let scrollbarX = new am4charts.XYChartScrollbar();
-    scrollbarX.series.push(lineSeries);
-    chart.scrollbarX = scrollbarX;*/
-
     chart.data = this.serieAjustada;
+    //chart.validateData();
   }
   
   dibujarVolumen(){
@@ -135,7 +116,6 @@ export class PageChartComponent implements OnInit {
     
     chart.cursor = new am4charts.XYCursor();
     chart.cursor.lineY.opacity = 0;
-  
+    //chart.validateData();
   }
-
 }

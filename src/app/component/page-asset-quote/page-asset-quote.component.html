@@ -53,10 +53,10 @@
             </mat-option>
           </mat-select>
         <mat-error *ngIf="titulo.hasError('required')">Campo Requerido</mat-error>
-        <mat-hint><b>{{tituloLess.descripcion}}</b>  - ultimo precio: <b>{{tituloLess.ultimoPrecio}}</b></mat-hint>
+        <!-- mat-hint><b>{{tituloLess.descripcion}}</b>  - ultimo precio: <b>{{tituloLess.ultimoPrecio}}</b></mat-hint -->
       </mat-form-field>
 
-      <mat-form-field class="item-config">
+      <!-- mat-form-field class="item-config">
           <mat-select matNativeControl required  [formControl]="tipoOpcion" (selectionChange)="changeTipoOpcion($event)"> 
             <mat-option value="" selected></mat-option>
             <mat-option value="Call">Call</mat-option>
@@ -74,9 +74,9 @@
         </mat-select>
         <mat-error *ngIf="opcionSelected==''">Campo Requerido</mat-error>
         <mat-hint></mat-hint>
-      </mat-form-field>
+      </mat-form-field -->
 
-      <section >
+      <section>
         <mat-form-field class="item-date">
             <input matInput [matDatepicker]="picker1" placeholder="Desde" [formControl]="fechaDesde">
             <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
@@ -88,11 +88,11 @@
             <mat-datepicker #picker2></mat-datepicker>
         </mat-form-field>
       </section>
-      <button mat-raised-button color="primary" (click)="buscarActivo()" class="item-config">Buscar</button>
-      <div style="padding: 5px;"></div>
-      <button mat-raised-button color="primary" (click)="buscarSerieHistorica()" class="item-config">Graficar</button>
-      <div style="padding: 5px;"></div>
+      
+      <!-- button mat-raised-button color="primary" (click)="buscarSerieHistorica()" class="item-config">Graficar</button -->
+      <div style="padding-top: 15%; margin: 4%;">
       <button mat-raised-button style="color:red;" (click)="logout()" class="item-config">Cerrar Sesion</button>
+      </div>
     </form>
   </mat-drawer>
   <mat-drawer-content>
@@ -101,16 +101,88 @@
     </mat-toolbar>
 
 
-    <div style="width:100%; text-align: left;">
-      <button mat-button color="primary" (click)="showDetail()">Detalle</button>
-      <button mat-button color="primary" (click)="showChart()">Grafico</button>
-    
-    </div> 
-    <router-outlet></router-outlet>
+      
+
+      
+      
+          <!-- 
+          <div> {{tituloLess | json}} </div>
+          <div> {{cotizacionActivo | json}}</div> 
+          -->
+          
+          <div style="height: 60px; display: flex; margin: 3px 10px 3px 10px;"><h1 style="">{{tituloLess.descripcion}}</h1><p style="font-size: small;padding-left: 15px;">{{tituloLess.simbolo}}</p></div>
+          <mat-card color="gray">
+            <div>
+              <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th colspan="8" style="text-align: left;">Datos de cotizaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-key">Precio Apertura:</td>
+                        <td class="col-value">$ {{cotizacionActivo.apertura}}</td>
+                        <td class="col-key">Tendencia:</td>
+                        <td class="col-value">{{cotizacionActivo.tendencia}}</td>
+                    </tr>
+                    <tr>
+                        <td class="col-key">Último Precio:</td>
+                        <td class="col-value">$ {{cotizacionActivo.ultimoPrecio}}</td>
+                        <td class="col-key">Monto Operado:</td>
+                        <td class="col-value">$ {{cotizacionActivo.montoOperado}}</td>
+                    </tr>
+                    <tr>
+                        <td class="col-key">Máximo:</td>
+                        <td class="col-value">$ {{cotizacionActivo.maximo}}</td>
+                        <td class="col-key">Variación diaria:</td>
+                        <td class="col-value">{{cotizacionActivo.variacion}} %</td>
+                    </tr>
+                      <tr>
+                        <td class="col-key">Mínimo:</td>
+                        <td class="col-value">$ {{cotizacionActivo.minimo}}</td>
+                        <td class="col-key"></td>
+                        <td class="col-value"></td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+          </mat-card>
+        
+
+          <mat-card> 
+            <button mat-button style="width: 10%;"(click)="buscarOpciones()" class="item-config">Detalle de opciones</button>
+            <table class="table-opciones"matSort (matSortChange)="sortData($event)">
+              <tr>
+                <th mat-sort-header="tipoOpcion" style="width: 1%;">Tipo</th>
+                <th mat-sort-header="simbolo" style="width: 5%;">Simbolo</th>
+                <th mat-sort-header="descripcion" style="width: 5%;">Descripcion</th>
+                <th mat-sort-header="montoOperado" style="width: 5%;">Monto</th>
+              </tr>
+              <tr *ngFor="let opcion of opciones">
+                <td>{{opcion.tipoOpcion}}</td>
+                <td>{{opcion.simbolo}}</td>
+                <td>{{opcion.descripcion}}</td>
+                <td>{{opcion.cotizacion.montoOperado}}</td>
+              </tr>
+            </table>
+          </mat-card>
+
+         
+          <mat-card> 
+            <button mat-button style="width: 5%;"(click)="graficar()" class="item-config">Graficar</button>
+              <mat-form-field class="example-full-width">
+                 <input matInput placeholder="" [(ngModel)]="activo" id="activoChart" >
+              </mat-form-field>
+           
+            <div id="chartdiv" style="width: 100%; height: 50%;"></div>
+            <div id="chartdivvolumen" style="width: 100%; height: 30%;"></div>
+          </mat-card>
 
 
-
-    
+          
+      
+     
   </mat-drawer-content>
 </mat-drawer-container>
 

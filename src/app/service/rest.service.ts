@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { TokenIOL } from '../model/model';
+import { TokenIOL, TituloLess, Cotizacion } from '../model/model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +12,8 @@ export class RestService {
   endpoint = "";                            
   token: TokenIOL;
   serieHistorica: Array<Object>;
+  tituloLess: TituloLess;
+ 
   constructor(private http: HttpClient) { }
 
   logIn(username: string, password: string, granType: string): Observable<any> {
