@@ -147,14 +147,23 @@ buscarOpciones(){
   let fd = this.format(this.fechaDesde.value);
   let fh = this.format(this.fechaHasta.value);
   let sumMonto = 0;
+  let fecha = null;
   this.service.buscarOpciones(this.mercado.value, this.simbolo.value).subscribe(
     (opciones) => {
         opciones.forEach(element => {
           this.service.buscaSerieHistorica(this.mercado.value, element.simbolo, fd, fh, "sinAjustar").subscribe(
             arrayCotizaciones => {
               sumMonto = 0;
+              fecha = null;
               arrayCotizaciones.forEach(cotizacionSec => {
-                sumMonto += cotizacionSec.montoOperado;
+                if (fecha == null) {
+                  fecha = Date.parse(cotizacionSec.fechaHora.slice(0,10));
+                  sumMonto += cotizacionSec.montoOperado;
+                // entro por dia y me guardo el monto operado en ese dia
+                }else if(Date.parse(cotizacionSec.fechaHora.slice(0,10)) < fecha){
+                  fecha = Date.parse(cotizacionSec.fechaHora.slice(0,10));
+                  sumMonto += cotizacionSec.montoOperado;
+                }
               });
               element.cotizacion.montoOperado = sumMonto;
               this.opciones.push(element);

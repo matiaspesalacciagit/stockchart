@@ -12,57 +12,24 @@ import { RestService } from './rest.service';
 })
 export class ChartService {
 
-  serieAjustada: Candle[] = [];
+  serieAjustada: Object[] = [];
   constructor(private service: RestService) { }
 
-
-  
   normalizarVelas(){
-    let candle : Candle;
+    let fecha = null;
     this.service.serieHistorica.forEach((element, index) => {
         const opcion = <Cotizacion> element;
-        if(index == 0){
-          candle = this.initializeCandle(opcion);
-        }else if( candle.date.slice(0,10) === opcion.fechaHora.slice(0,10)){
-          if(new Date(candle.date).getTime() > new Date(opcion.fechaHora).getTime()){
-            candle.open = opcion.apertura.toString();
-            if(candle.lowNumber > opcion.minimo){
-              candle.lowNumber = opcion.minimo;
-              candle.low = opcion.minimo.toString();
-            }
-            if(candle.highNumber < opcion.maximo){
-              candle.highNumber = opcion.maximo;
-              candle.high = opcion.maximo.toString();
-            }
-          }
-          candle.montoOperado += opcion.montoOperado;
-          candle.volumenNominal += opcion.volumenNominal;
-          candle.cantidadOperaciones += opcion.cantidadOperaciones;
-          candle.close = opcion.ultimoPrecio.toString();
-          //const variacion = (((opcion.ultimoPrecio / opcion.cierreAnterior) *100 ) -100).toFixed(2).toString();
-          //candle.variation = new Number(variacion).toString();
-        }else{
-          candle.date = candle.date.slice(0,10).toString();
-          candle.montoOperado = new Number(candle.montoOperado.toFixed(2)).valueOf();
+        if (fecha == null) {
+          fecha = Date.parse(opcion.fechaHora.slice(0,10));
+          let candle = { "date": opcion.fechaHora.slice(0,10), "close": opcion.ultimoPrecio, "open": opcion.apertura, "low": opcion.minimo, "high": opcion.maximo, "value": opcion.volumenNominal};
           this.serieAjustada.push(candle);
-          candle = this.initializeCandle(opcion);
+        // entro por dia y me guardo el monto operado en ese dia
+        }else if(Date.parse(opcion.fechaHora.slice(0,10)) < fecha){
+          fecha = Date.parse(opcion.fechaHora.slice(0,10));
+          let candle = { "date": opcion.fechaHora.slice(0,10), "close": opcion.ultimoPrecio, "open": opcion.apertura, "low": opcion.minimo, "high": opcion.maximo, "value": opcion.volumenNominal};
+          this.serieAjustada.push(candle);
         }
     });
-  }
-
-  initializeCandle(opcion: Cotizacion): Candle {
-    let candle: Candle = {date: "", open: "", high: "", highNumber: 0, low: "", lowNumber: 0, close: "", variation: "", montoOperado: 0, volumenNominal: 0, cantidadOperaciones: 0}
-    candle.date = opcion.fechaHora.toString() ;
-    candle.close = opcion.cierreAnterior.toString();
-    candle.open = opcion.apertura.toString();
-    candle.high = opcion.maximo.toString();
-    candle.low = opcion.minimo.toString();
-    candle.highNumber = opcion.maximo;
-    candle.lowNumber = opcion.minimo;
-    candle.montoOperado = opcion.montoOperado;
-    candle.volumenNominal = opcion.volumenNominal;
-    candle.cantidadOperaciones = opcion.cantidadOperaciones;
-    return candle;
   }
 
   dibujarVelas() {
@@ -87,17 +54,13 @@ export class ChartService {
     series.tooltipText = "Open:${openValueY.value}\nLow:${lowValueY.value}\nHigh:${highValueY.value}\nClose:${valueY.value}";
     chart.cursor = new am4charts.XYCursor();
     chart.data = this.serieAjustada;
-    //chart.validateData();
+    chart.validateData();
   }
   
   dibujarVolumen(){
     let chart = am4core.create("chartdivvolumen", am4charts.XYChart);
     chart.paddingRight = 20;
-
-    this.serieAjustada.forEach(element => {
-      let o = element as Candle;
-      chart.data.push({ date: o.date, value: o.volumenNominal});
-    });
+    chart.data = this.serieAjustada;
 
     let dateAxis = chart.xAxes.push(new am4charts.DateAxis());
     dateAxis.renderer.grid.template.location = 0.5;
@@ -116,6 +79,6 @@ export class ChartService {
     
     chart.cursor = new am4charts.XYCursor();
     chart.cursor.lineY.opacity = 0;
-    //chart.validateData();
+    chart.validateData();
   }
 }
