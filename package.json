@@ -1,10 +1,13 @@
 {
-  "name": "stockchartdemo",
-  "version": "0.0.0",
+  "name": "stockchartarg",
+  "description": "Stock Chart",
+  "version": "1.0.0",
+  "engines": {
+    "node": "10.3.0"
+  },
   "scripts": {
     "ng": "ng",
-    "start2": "node server.js",
-    "start": "ng serve --proxy-config proxy.config.json",
+    "start": "node server.js",
     "local": "ng serve --proxy-config proxy.config.json",
     "build": "ng build",
     "test": "ng test",
@@ -28,15 +31,18 @@
     "@angular/platform-browser": "^7.2.11",
     "@angular/platform-browser-dynamic": "~7.2.0",
     "@angular/router": "~7.2.0",
+    "bufferutil": "4.0.1",
     "core-js": "^2.5.4",
     "cors": "^2.8.5",
-    "express": "^4.16.4",
+    "express": "4.16.4",
     "express-http-proxy": "^1.5.1",
     "http-proxy": "^1.17.0",
     "http-proxy-middleware": "^0.19.1",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
     "typescript": "~3.2.2",
+    "utf-8-validate": "5.0.2",
+    "ws": "7.0.0",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
