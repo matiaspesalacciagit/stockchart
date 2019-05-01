@@ -12,11 +12,6 @@ app.all('*', function (req, res) {
     res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
 });
 
-
-app.get('/*', cors(), function (req, res, next) {
-  res.json();
-})
-
 const PORT = process.env.PORT || 4200;
 app.listen(PORT, () => {
     console.log(`Server escuchando en el puerto ${PORT}`);

@@ -89,18 +89,3 @@ export interface TokenIOL {
     expires: string;
     refreshexpires: string;
 }
-
-export interface Candle{
-    date: string;
-    open: string;
-    high: string;
-    highNumber: number
-    low: string;
-    lowNumber: number;
-    close: string;
-    variation: string;
-    montoOperado: number;
-    volumenNominal: number;
-    cantidadOperaciones: number;
-
-}

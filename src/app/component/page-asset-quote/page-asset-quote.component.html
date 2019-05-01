@@ -53,28 +53,7 @@
             </mat-option>
           </mat-select>
         <mat-error *ngIf="titulo.hasError('required')">Campo Requerido</mat-error>
-        <!-- mat-hint><b>{{tituloLess.descripcion}}</b>  - ultimo precio: <b>{{tituloLess.ultimoPrecio}}</b></mat-hint -->
       </mat-form-field>
-
-      <!-- mat-form-field class="item-config">
-          <mat-select matNativeControl required  [formControl]="tipoOpcion" (selectionChange)="changeTipoOpcion($event)"> 
-            <mat-option value="" selected></mat-option>
-            <mat-option value="Call">Call</mat-option>
-            <mat-option value="Put">Put</mat-option>
-          </mat-select>
-      </mat-form-field>
-
-      <mat-form-field class="item-config">
-        <mat-label>Opciones</mat-label>
-        <mat-select matNativeControl [(ngModel)]="opcionSelected" formControlName="opcionSelected" >
-        <mat-option value="" selected></mat-option>
-          <mat-option *ngFor="let o of opciones" [value]="o.simbolo" class="mat-option ng-star-inserted {{ o.tipoEjercicio }}">
-              {{o.descripcion}}
-          </mat-option>
-        </mat-select>
-        <mat-error *ngIf="opcionSelected==''">Campo Requerido</mat-error>
-        <mat-hint></mat-hint>
-      </mat-form-field -->
 
       <section>
         <mat-form-field class="item-date">
@@ -88,8 +67,7 @@
             <mat-datepicker #picker2></mat-datepicker>
         </mat-form-field>
       </section>
-      
-      <!-- button mat-raised-button color="primary" (click)="buscarSerieHistorica()" class="item-config">Graficar</button -->
+
       <div style="padding-top: 15%; margin: 4%;">
       <button mat-raised-button style="color:red;" (click)="logout()" class="item-config">Cerrar Sesion</button>
       </div>
@@ -104,11 +82,6 @@
       
 
       
-      
-          <!-- 
-          <div> {{tituloLess | json}} </div>
-          <div> {{cotizacionActivo | json}}</div> 
-          -->
           
           <div style="height: 60px; display: flex; margin: 3px 10px 3px 10px;"><h1 style="">{{tituloLess.descripcion}}</h1><p style="font-size: small;padding-left: 15px;">{{tituloLess.simbolo}}</p></div>
           <mat-card color="gray">
@@ -130,7 +103,7 @@
                         <td class="col-key">Último Precio:</td>
                         <td class="col-value">$ {{cotizacionActivo.ultimoPrecio}}</td>
                         <td class="col-key">Monto Operado:</td>
-                        <td class="col-value">$ {{cotizacionActivo.montoOperado}}</td>
+                        <td class="col-value">{{cotizacionActivo.montoOperado | currency}}</td>
                     </tr>
                     <tr>
                         <td class="col-key">Máximo:</td>
