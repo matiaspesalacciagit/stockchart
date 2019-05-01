@@ -9,7 +9,7 @@ import { TokenIOL, TituloLess, Cotizacion } from '../model/model';
 export class RestService {
 
   // https://api.invertironline.com
-  endpoint = "https://api.invertironline.com";                            
+  endpoint = "";                            
   token: TokenIOL;
   serieHistorica: Array<Object>;
   tituloLess: TituloLess;
