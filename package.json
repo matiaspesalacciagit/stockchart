@@ -1,9 +1,9 @@
 {
-  "name": "stockchartarg",
+  "name": "stockchartdemo",
   "description": "Stock Chart",
   "version": "1.0.0",
   "engines": {
-    "node": "10.3.0"
+    "node": "~8.12.0"
   },
   "scripts": {
     "ng": "ng",
