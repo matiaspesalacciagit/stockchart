@@ -105,7 +105,7 @@
                         <td class="col-key">Variación diaria:</td>
                         <td class="col-value">{{cotizacionActivo.variacion}} %</td>
                     </tr>
-                      <tr>
+                    <tr>
                         <td class="col-key">Mínimo:</td>
                         <td class="col-value">$ {{cotizacionActivo.minimo}}</td>
                         <td class="col-key"></td>
@@ -117,18 +117,22 @@
           </mat-card>
           <mat-card> 
             <button mat-button style="width: 10%;"(click)="buscarOpciones()" class="item-config">Detalle de opciones</button>
-            <table class="table-opciones"matSort (matSortChange)="sortData($event)">
+            <table class="table-opciones" matSort (matSortChange)="sortData($event)">
               <tr>
                 <th mat-sort-header="tipoOpcion" style="width: 1%;">Tipo</th>
                 <th mat-sort-header="simbolo" style="width: 5%;">Simbolo</th>
-                <th mat-sort-header="descripcion" style="width: 5%;">Descripcion</th>
+                <!-- th mat-sort-header="descripcion" style="width: 5%;">Descripcion</th -->
                 <th mat-sort-header="montoOperado" style="width: 5%;">Monto</th>
+                <th mat-sort-header="ultimoPrecio" style="width: 5%;">Ultimo Precio</th>
               </tr>
-              <tr *ngFor="let opcion of opciones">
+              <tr *ngFor="let opcion of opciones; let idx=index; let even=even" 
+                [style.background-color]="opcion.rowClicked ? 'f9f889' : (even ? '#fff' : '#efefef')"
+                (click)="(opcion.rowClicked = !opcion.rowClicked); setActivoWitchChart(opcion);">
                 <td>{{opcion.tipoOpcion}}</td>
                 <td>{{opcion.simbolo}}</td>
-                <td>{{opcion.descripcion}}</td>
+                <!-- td>{{opcion.descripcion}}</td -->
                 <td>{{opcion.cotizacion.montoOperado | currency}}</td>
+                <td>{{opcion.cotizacion.ultimoPrecio}}</td>
               </tr>
             </table>
           </mat-card>
@@ -137,11 +141,9 @@
               <mat-form-field class="example-full-width">
                  <input matInput placeholder="" [(ngModel)]="activo" id="activoChart" >
               </mat-form-field>
-           
             <div id="chartdiv" style="width: 100%; height: 50%;"></div>
             <div id="chartdivvolumen" style="width: 100%; height: 30%;"></div>
           </mat-card>
-     
   </mat-drawer-content>
 </mat-drawer-container>
 

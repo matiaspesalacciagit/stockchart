@@ -96,10 +96,12 @@ export class PageAssetQuoteComponent implements OnInit {
       error => {
         console.log("EE:",error);
       });
-
-
   }
   
+  setActivoWitchChart(opcion: Opcion){
+    this.activo = opcion.simbolo;
+  }
+
   // changeTipoOpcion(event:any){
   //     this.service.buscarOpciones(this.mercado.value, this.simbolo.value).subscribe(
   //       (data) => {
@@ -141,7 +143,7 @@ export class PageAssetQuoteComponent implements OnInit {
     CALL: El Precio del activo (ej. GGAL) < Precio de Ejercicio o Strike (ej. GFGC80.0AB)
     PUT: El Precio del activo (ej. GGAL) > Precio de Ejercicio o Strike (ej. GFGC80.0AB)
 */
-  
+
 buscarOpciones(){
   this.opciones = [];
   let fd = this.format(this.fechaDesde.value);
@@ -159,6 +161,7 @@ buscarOpciones(){
                 if (fecha == null) {
                   fecha = Date.parse(cotizacionSec.fechaHora.slice(0,10));
                   sumMonto += cotizacionSec.montoOperado;
+                  element.cotizacion.ultimoPrecio = cotizacionSec.ultimoPrecio;
                 // entro por dia y me guardo el monto operado en ese dia
                 }else if(Date.parse(cotizacionSec.fechaHora.slice(0,10)) < fecha){
                   fecha = Date.parse(cotizacionSec.fechaHora.slice(0,10));
@@ -172,8 +175,6 @@ buscarOpciones(){
     }
   ); 
 }
-
-
 
 buscarSerieHistorica(){ 
   let fd = this.format(this.fechaDesde.value);
@@ -190,7 +191,6 @@ buscarSerieHistorica(){
     });
   }
 
-
   format(date: Date): string {
     const day = date.getDate();
     const month = ((date.getMonth() + 1)+ "").padStart(2,"0");
@@ -198,7 +198,6 @@ buscarSerieHistorica(){
     return `${year}-${month}-${day}`;
   }
 
-  
   graficar(){
     this.buscarSerieHistorica();
   }
@@ -222,13 +221,12 @@ buscarSerieHistorica(){
         case 'simbolo': return compare(a.simbolo, b.simbolo, isAsc);
         case 'descripcion': return compare(a.descripcion, b.descripcion, isAsc);
         case 'montoOperado': return compare(a.cotizacion.montoOperado, b.cotizacion.montoOperado, isAsc);
+        case 'ultimoPrecio' : return compare(a.cotizacion.ultimoPrecio, b.cotizacion.ultimoPrecio, isAsc);
         default: return 0;
       }
     });
   }
 }
-
-
 
 function compare(a: number | string, b: number | string, isAsc: boolean) {
   return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
