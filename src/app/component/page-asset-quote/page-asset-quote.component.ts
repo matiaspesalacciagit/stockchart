@@ -160,15 +160,14 @@ buscarOpciones(){
               arrayCotizaciones.forEach(cotizacionSec => {
                 if (fecha == null) {
                   fecha = Date.parse(cotizacionSec.fechaHora.slice(0,10));
-                  sumMonto += cotizacionSec.montoOperado;
                   element.cotizacion.ultimoPrecio = cotizacionSec.ultimoPrecio;
+                  element.cotizacion.montoOperado += cotizacionSec.montoOperado;
                 // entro por dia y me guardo el monto operado en ese dia
                 }else if(Date.parse(cotizacionSec.fechaHora.slice(0,10)) < fecha){
                   fecha = Date.parse(cotizacionSec.fechaHora.slice(0,10));
-                  sumMonto += cotizacionSec.montoOperado;
+                  element.cotizacion.montoOperado += cotizacionSec.montoOperado;
                 }
               });
-              element.cotizacion.montoOperado = sumMonto;
               this.opciones.push(element);
         });
       });
