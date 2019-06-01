@@ -12,6 +12,7 @@ import { PageLoginComponent } from './component/page-login/page-login.component'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ChartService } from './service/chart.service';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,7 @@ import { ChartService } from './service/chart.service';
     MaterialModule,
     HttpClientModule
   ],
-  providers: [GuardService, RestService, ChartService, {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}],
+  providers: [GuardService, RestService, ChartService, DatePipe, {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

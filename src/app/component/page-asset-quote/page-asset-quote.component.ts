@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { RestService } from '../../service/rest.service';
 
-import { Titulo, TituloLess, Cotizacion, Opcion } from '../../model/model';
+import { Titulo, TituloLess, Cotizacion, Opcion, EstadoCuenta, Cuenta, Activo, Puntas } from '../../model/model';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ChartService } from 'src/app/service/chart.service';
 import { Sort } from '@angular/material';
-import { HttpErrorResponse } from '@angular/common/http';
+import { DatePipe } from '@angular/common';
+import { string } from '@amcharts/amcharts4/core';
+import { any } from '@amcharts/amcharts4/.internal/core/utils/Array';
 
 @Component({
   selector: 'app-page-asset-quote',
@@ -30,19 +32,27 @@ export class PageAssetQuoteComponent implements OnInit {
   mapTipoEjercicio = null;
   cotizacionActivo: Cotizacion;
   opciones: Opcion[] = [];
-
   activo: string;
+  cuentas: Cuenta[];
+  activos: Activo[];
+  displayedColumnsPortafolio: string[] = ['Activo', 'Cantidad', 'Variación diaria', 'Último Precio', 'PPC', 'Ganancia-Pérdida', 'Saldo Valorizado'];
+  activoOperar: FormControl;
+  cantidadOperar: FormControl;
+  precioOperar: FormControl;
+  montoOperar: Number;
+  activoOperarCotizacion: Cotizacion;
+  displayedColumnsPuntas: string[] = ['Cant Compra', 'Precio Compra', 'Precio Venta', 'Cant Venta'];
+  messagesOperatoria: [{message: string}];
 
-  constructor(private router: Router,  private route: ActivatedRoute, private formBuilder: FormBuilder, private service: RestService, private chartService: ChartService) {   }
+  constructor(private router: Router,  private route: ActivatedRoute, private formBuilder: FormBuilder, private service: RestService, private chartService: ChartService, private datepipe: DatePipe) {   }
   ngOnInit() {
     this.form = this.formBuilder.group({
       paneles : [[], Validators.required],
       instrumentos : [[], Validators.required],
-      titulos : [[], Validators.required],
-    
+      titulos : [[], Validators.required]
     });
     this.tituloLess = { descripcion : '' , simbolo : '', ultimoPrecio: null, tendencia: '', puntas: [], cantidadOperaciones:null, apertura:null, maximo:null, minimo:null, variacion:null};
-    this.cotizacionActivo = <Cotizacion> {apertura: 0, cantidadOperaciones: 0, cierreAnterior: 0, fechaHora: "",  interesesAbiertos: 0, maximo: 0, minimo: 0,  moneda: "", montoOperado: 0, precioAjuste: 0, precioPromedio: 0, puntas: "", tendencia: "", ultimoPrecio: 0, variacion: 0, volumenNominal: 0 }
+    this.cotizacionActivo = <Cotizacion> {apertura: 0, cantidadOperaciones: 0, cierreAnterior: 0, fechaHora: "",  interesesAbiertos: 0, maximo: 0, minimo: 0,  moneda: "", montoOperado: 0, precioAjuste: 0, precioPromedio: 0, tendencia: "", ultimoPrecio: 0, variacion: 0, volumenNominal: 0 }
     let dateFD = new Date(); dateFD.setMonth(dateFD.getMonth()-2);
     this.fechaDesde = new FormControl(dateFD, Validators.required);
     this.fechaHasta = new FormControl(new Date(), Validators.required);
@@ -53,6 +63,13 @@ export class PageAssetQuoteComponent implements OnInit {
     this.mercado = new FormControl('BCBA', Validators.required);
     this.titulo = new FormControl('', Validators.required);
     this.simbolo = new FormControl('', Validators.required);
+    this.activoOperar = new FormControl('');
+    this.cantidadOperar = new FormControl('');
+    this.precioOperar = new FormControl('');
+    this.messagesOperatoria = [{message: ''}];
+    this.activoOperarCotizacion = <Cotizacion> { };
+    this.getEstadoCuenta();
+    this.getPortafolio();
   }
 
   changePais(event:any){
@@ -90,7 +107,6 @@ export class PageAssetQuoteComponent implements OnInit {
             this.tituloLess = <TituloLess> data;
             this.cotizacionActivo = <Cotizacion> cotizacion;
             this.activo = this.tituloLess.simbolo;
-           // this.buscarSerieHistorica();
         });
       },
       error => {
@@ -101,36 +117,6 @@ export class PageAssetQuoteComponent implements OnInit {
   setActivoWitchChart(opcion: Opcion){
     this.activo = opcion.simbolo;
   }
-
-  // changeTipoOpcion(event:any){
-  //     this.service.buscarOpciones(this.mercado.value, this.simbolo.value).subscribe(
-  //       (data) => {
-  //           let ultimoPrecio = this.tituloLess.ultimoPrecio;
-  //           let filtradas: Array<Opciones> = [];
-  //           data.forEach(element => {
-  //             if(element.tipoOpcion == this.tipoOpcion.value){
-  //               let thenum = element.simbolo.replace(/[^\d\.]*/g, '');
-  //               let key = (ultimoPrecio>thenum ? 'Activo>'+element.tipoOpcion : ultimoPrecio<thenum ? 'Activo<'+element.tipoOpcion : '' );
-  //               element.tipoEjercicio = this.mapTipoEjercicio.get(key);
-  //               filtradas.push(element);
-  //             }
-  //             this.opciones = filtradas;
-  //           }
-  //         )
-  //       },
-  //       (err: Object) => {
-  //         if (err instanceof Error) {
-  //           console.log('Client-side error occured.');
-  //         } else if (err instanceof HttpErrorResponse) {
-  //           const msjerror = err.error['error_descript'];
-  //           console.log(msjerror);
-  //         } else {
-
-  //         }
-  //       }
-  //     );
-  //   }
-  
 
  
 /*
@@ -148,14 +134,12 @@ buscarOpciones(){
   this.opciones = [];
   let fd = this.format(this.fechaDesde.value);
   let fh = this.format(this.fechaHasta.value);
-  let sumMonto = 0;
   let fecha = null;
   this.service.buscarOpciones(this.mercado.value, this.simbolo.value).subscribe(
     (opciones) => {
         opciones.forEach(element => {
           this.service.buscaSerieHistorica(this.mercado.value, element.simbolo, fd, fh, "sinAjustar").subscribe(
             arrayCotizaciones => {
-              sumMonto = 0;
               fecha = null;
               arrayCotizaciones.forEach(cotizacionSec => {
                 if (fecha == null) {
@@ -206,6 +190,9 @@ buscarSerieHistorica(){
     this.router.navigate(['/login']);
   }
 
+  compare(a: number | string, b: number | string, isAsc: boolean) {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
   sortData(sort: Sort) {
     const data = this.opciones.slice();
     if (!sort.active || sort.direction === '') {
@@ -216,17 +203,100 @@ buscarSerieHistorica(){
     this.opciones = data.sort((a, b) => {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
-        case 'tipoOpcion': return compare(a.tipoOpcion, b.tipoOpcion, isAsc);
-        case 'simbolo': return compare(a.simbolo, b.simbolo, isAsc);
-        case 'descripcion': return compare(a.descripcion, b.descripcion, isAsc);
-        case 'montoOperado': return compare(a.cotizacion.montoOperado, b.cotizacion.montoOperado, isAsc);
-        case 'ultimoPrecio' : return compare(a.cotizacion.ultimoPrecio, b.cotizacion.ultimoPrecio, isAsc);
+        case 'tipoOpcion': return this.compare(a.tipoOpcion, b.tipoOpcion, isAsc);
+        case 'simbolo': return this.compare(a.simbolo, b.simbolo, isAsc);
+        case 'descripcion': return this.compare(a.descripcion, b.descripcion, isAsc);
+        case 'montoOperado': return this.compare(a.cotizacion.montoOperado, b.cotizacion.montoOperado, isAsc);
+        case 'ultimoPrecio' : return this.compare(a.cotizacion.ultimoPrecio, b.cotizacion.ultimoPrecio, isAsc);
         default: return 0;
       }
     });
   }
+
+
+  getEstadoCuenta(){
+    this.service.estadoDeCuenta().subscribe(
+      result => { 
+        const estadoCuenta = <EstadoCuenta> result;
+        this.cuentas = estadoCuenta.cuentas;
+      }
+    )
+  }
+
+  getPortafolio() {
+    this.service.portafolio().subscribe(
+      result => { 
+        this.activos = result['activos'];
+      }
+    )
+  }
+
+  refreshPortafolio(){
+    this.getPortafolio();
+  }
+
+
+
+  buscarCotizacionActivoAOperar(){
+    this.service.obtenerCotizacion(this.mercado.value, this.activoOperar.value).subscribe(
+      result => {
+        this.activoOperarCotizacion = <Cotizacion> result;
+        this.precioOperar = new FormControl(this.activoOperarCotizacion.ultimoPrecio);
+        this.calcularMonto();
+      },error => {
+        this.activoOperarCotizacion.puntas = null
+        this.activoOperarCotizacion.ultimoPrecio = null;
+        this.activoOperarCotizacion.variacion = null;
+      });
+      
+  }
+
+  calcularMonto(){
+    this.montoOperar = null;
+    if(this.cantidadOperar.value && this.precioOperar.value){
+      this.montoOperar = this.cantidadOperar.value * this.precioOperar.value;
+    }
+  }
+
+  comprar(){
+    this.messagesOperatoria = [{message: ''}];
+    const validez =this.datepipe.transform(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    this.service.comprar(this.mercado.value.toUpperCase(), this.activoOperar.value.toUpperCase(), this.cantidadOperar.value, this.precioOperar.value, validez.toString()).subscribe(
+      result => {
+        let messages = result['messages'];
+        messages.forEach(element => {
+          this.messagesOperatoria.push( {message: element['description'] });
+        });
+      },error => {
+        console.log("EE:",error); 
+      }
+    )
+  }
+
+
+  vender(){
+    this.messagesOperatoria = [{message: ''}];
+    const validez =this.datepipe.transform(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    this.service.vender(this.mercado.value.toUpperCase(), this.activoOperar.value.toUpperCase(), this.cantidadOperar.value, this.precioOperar.value, validez.toString()).subscribe(
+      result => {
+        let desc: any = result;
+        desc.forEach(element => {
+          this.messagesOperatoria.push( {message: element['description'] });
+        });
+      },error => {
+        console.log("EE:",error); 
+      }
+    )
+  }
+
+
+
 }
 
+/*
 function compare(a: number | string, b: number | string, isAsc: boolean) {
   return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }
+*/
+
+

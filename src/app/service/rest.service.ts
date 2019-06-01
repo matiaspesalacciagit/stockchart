@@ -100,4 +100,40 @@ export class RestService {
     return null;
   }
 
+  estadoDeCuenta() {
+    if (this.token && this.token.access_token) {
+      const autToken = 'Bearer ' + this.token.access_token;
+      const url = this.endpoint + '/api/v2/estadocuenta' ;
+      return this.http.get(url, {headers : new HttpHeaders( {'Authorization': autToken})} );
+    }
+    return null;
+  }
+
+  portafolio() {
+    if (this.token && this.token.access_token) {
+      const autToken = 'Bearer ' + this.token.access_token;
+      const url = this.endpoint + '/api/v2/portafolio' ;
+      return this.http.get(url, {headers : new HttpHeaders( {'Authorization': autToken})} );
+    }
+    return null;
+  }
+  comprar(mercado: string, simbolo: string, cantidad: string, precio: string, validez: string) {
+    const orden = {mercado: mercado, simbolo: simbolo, cantidad: cantidad, precio: precio, plazo: 't0', validez: validez }
+    if (this.token && this.token.access_token) {
+      const autToken = 'Bearer ' + this.token.access_token;
+      const url = this.endpoint + '/api/v2/operar/Comprar' ;
+      return this.http.post(url, orden, {headers : new HttpHeaders( {'Authorization': autToken})} );
+    }
+    return null;
+  }
+
+  vender(mercado: string, simbolo: string, cantidad: string, precio: string, validez: string) {
+    const orden = {mercado: mercado, simbolo: simbolo, cantidad: cantidad, precio: precio, plazo: 't0', validez: validez }
+    if (this.token && this.token.access_token) {
+      const autToken = 'Bearer ' + this.token.access_token;
+      const url = this.endpoint + '/api/v2/operar/Vender' ;
+      return this.http.post(url, orden, {headers : new HttpHeaders( {'Authorization': autToken})} );
+    }
+    return null;
+  }  
 }

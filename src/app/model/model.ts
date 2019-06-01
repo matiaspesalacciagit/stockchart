@@ -52,7 +52,7 @@ export interface Cotizacion {
     montoOperado: number;
     precioAjuste: number;
     precioPromedio: number;
-    puntas: string
+    puntas: Puntas
     tendencia: string;
     ultimoPrecio: number;
     variacion: number;
@@ -88,4 +88,68 @@ export interface TokenIOL {
     issued: string;
     expires: string;
     refreshexpires: string;
+}
+
+
+
+
+/* Esado de cuenta **/
+export interface Saldo {
+    liquidacion: string;
+    saldo: number;
+    comprometido: number;
+    disponible: number;
+    disponibleOperar: number;
+}
+
+
+export interface Cuenta {
+    numero: string;
+    tipo: string;
+    moneda: string;
+    disponible: number;
+    comprometido: number;
+    saldo: number;
+    titulosValorizados: number;
+    total: number;
+    margenDescubierto: number;
+    saldos: Saldo[];
+    estado: string;
+}
+
+export interface Estadistica {
+    descripcion: string;
+    cantidad: number;
+    volumen: number;
+}
+
+export interface EstadoCuenta {
+    cuentas: Cuenta[];
+    estadisticas: Estadistica[];
+    totalEnPesos: number;
+}
+
+
+
+export interface TituloActivo {
+    simbolo: string;
+    descripcion: string;
+    pais: string;
+    mercado: string;
+    tipo: string;
+    plazo: string;
+    moneda: string;
+}
+
+export interface Activo {
+    cantidad: number;
+    comprometido: number;
+    puntosVariacion: number;
+    variacionDiaria: number;
+    ultimoPrecio: number;
+    ppc: number;
+    gananciaPorcentaje: number;
+    gananciaDinero: number;
+    valorizado: number;
+    titulo: TituloActivo;
 }
