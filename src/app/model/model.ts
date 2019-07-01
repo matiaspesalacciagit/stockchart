@@ -153,3 +153,8 @@ export interface Activo {
     valorizado: number;
     titulo: TituloActivo;
 }
+
+export interface Pais {
+    value: string;
+    desc: string;
+}

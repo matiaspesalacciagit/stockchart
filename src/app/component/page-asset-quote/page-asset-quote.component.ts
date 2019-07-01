@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { RestService } from '../../service/rest.service';
 
-import { Titulo, TituloLess, Cotizacion, Opcion, EstadoCuenta, Cuenta, Activo, Puntas } from '../../model/model';
+import { Titulo, TituloLess, Cotizacion, Opcion, EstadoCuenta, Cuenta, Activo, Puntas, Pais } from '../../model/model';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ChartService } from 'src/app/service/chart.service';
 import { Sort } from '@angular/material';
@@ -16,7 +16,6 @@ import { any } from '@amcharts/amcharts4/.internal/core/utils/Array';
   styleUrls: ['./page-asset-quote.component.css']
 })
 export class PageAssetQuoteComponent implements OnInit {
-  form: FormGroup;
   mercado: FormControl;
   fechaDesde: FormControl;
   fechaHasta: FormControl;
@@ -26,9 +25,10 @@ export class PageAssetQuoteComponent implements OnInit {
   titulo: FormControl;
   simbolo: FormControl;
   instrumento: FormControl;
+  paises: Pais[];
   instrumentos: [];
   paneles: [];
-  titulos: Titulo[];
+  titulos: [];
   mapTipoEjercicio = null;
   cotizacionActivo: Cotizacion;
   opciones: Opcion[] = [];
@@ -46,18 +46,14 @@ export class PageAssetQuoteComponent implements OnInit {
 
   constructor(private router: Router,  private route: ActivatedRoute, private formBuilder: FormBuilder, private service: RestService, private chartService: ChartService, private datepipe: DatePipe) {   }
   ngOnInit() {
-    this.form = this.formBuilder.group({
-      paneles : [[], Validators.required],
-      instrumentos : [[], Validators.required],
-      titulos : [[], Validators.required]
-    });
+    this.paises = [{ value: 'argentina', desc: 'Argentina'}, { value: 'estados_Unidos',  desc: 'EEUU'}, { value: 'brasil', desc: 'Brasil'}, { value: 'chile', desc: 'Chile'}, { value: 'colombia', desc: 'Colombia'}, { value: 'mexico', desc: 'Mexico'}];
     this.tituloLess = { descripcion : '' , simbolo : '', ultimoPrecio: null, tendencia: '', puntas: [], cantidadOperaciones:null, apertura:null, maximo:null, minimo:null, variacion:null};
     this.cotizacionActivo = <Cotizacion> {apertura: 0, cantidadOperaciones: 0, cierreAnterior: 0, fechaHora: "",  interesesAbiertos: 0, maximo: 0, minimo: 0,  moneda: "", montoOperado: 0, precioAjuste: 0, precioPromedio: 0, tendencia: "", ultimoPrecio: 0, variacion: 0, volumenNominal: 0 }
-    let dateFD = new Date(); dateFD.setMonth(dateFD.getMonth()-2);
+      let dateFD = new Date(); dateFD.setMonth(dateFD.getMonth()-2);
     this.fechaDesde = new FormControl(dateFD, Validators.required);
     this.fechaHasta = new FormControl(new Date(), Validators.required);
     this.mapTipoEjercicio = new Map<string, string>([ ['Activo>Call', 'itm'], ['Activo<Call', 'otm'], ['Activo>Put', 'otm'], ['Activo<Put', 'itm'] ]);
-    this.pais = new FormControl('', Validators.required);
+    this.pais = new FormControl(this.paises[0].value, Validators.required);
     this.instrumento = new FormControl('', Validators.required);
     this.panel = new FormControl('', Validators.required);
     this.mercado = new FormControl('BCBA', Validators.required);
@@ -68,19 +64,21 @@ export class PageAssetQuoteComponent implements OnInit {
     this.precioOperar = new FormControl('');
     this.messagesOperatoria = [{message: ''}];
     this.activoOperarCotizacion = <Cotizacion> { };
+
+    this.changePais(null);
     this.getEstadoCuenta();
     this.getPortafolio();
   }
 
   changePais(event:any){
-     this.service.buscarInstrumentos(this.pais.value).subscribe(
-       result => {
-         this.instrumentos = result;
-       },
-       (error: any) => {
-         console.log(error);
-       }
-     );
+    this.service.buscarInstrumentos(this.pais.value).subscribe(
+      result => {
+        this.instrumentos = result;
+      },
+      (error: any) => {
+        console.log(error);
+      }
+    );
   }
 
   changeInstrumento(event:any){
@@ -264,9 +262,13 @@ buscarSerieHistorica(){
     this.service.comprar(this.mercado.value.toUpperCase(), this.activoOperar.value.toUpperCase(), this.cantidadOperar.value, this.precioOperar.value, validez.toString()).subscribe(
       result => {
         let messages = result['messages'];
-        messages.forEach(element => {
+        if(!messages){
+          this.messagesOperatoria.push({message: 'Se ejecuto la orden bajo el numero: ' + result['numeroOperacion'] });
+        }else{
+          messages.forEach(element => {
           this.messagesOperatoria.push( {message: element['description'] });
-        });
+          });
+        }
       },error => {
         console.log("EE:",error); 
       }
@@ -279,10 +281,14 @@ buscarSerieHistorica(){
     const validez =this.datepipe.transform(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     this.service.vender(this.mercado.value.toUpperCase(), this.activoOperar.value.toUpperCase(), this.cantidadOperar.value, this.precioOperar.value, validez.toString()).subscribe(
       result => {
-        let desc: any = result;
-        desc.forEach(element => {
-          this.messagesOperatoria.push( {message: element['description'] });
-        });
+        if(!result){
+          this.messagesOperatoria.push({message: 'Se ejecuto la orden bajo el numero: ' + result['numeroOperacion'] });
+        }else{
+          let desc: any = result;
+          desc.forEach(element => {
+            this.messagesOperatoria.push( {message: element['description'] });
+          });
+        }
       },error => {
         console.log("EE:",error); 
       }

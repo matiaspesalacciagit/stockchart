@@ -1,87 +1,79 @@
 <mat-drawer-container class="example-container" >
   <mat-drawer #drawer [mode]="true" class="example-sidenav-content">
-      <mat-toolbar color="primary"><span>Configuraciones</span></mat-toolbar>
-      <form  [formGroup]="form">
-      
-      <mat-form-field class="item-config">
-      <mat-label>Pais</mat-label>
-          <mat-select matNativeControl required [formControl]="pais" (selectionChange)="changePais($event)"> 
-            <mat-option value="argentina" selected>Argentina</mat-option>
-            <mat-option value="estados_Unidos">Estados Unidos</mat-option>
-            <mat-option value="brasil">Brasil</mat-option>
-            <mat-option value="chile">Chile</mat-option>
-            <mat-option value="colombia">Colombia</mat-option>
-            <mat-option value="mexico">Mexico</mat-option>
-          </mat-select>
-        <mat-error *ngIf="pais.hasError('required')">Campo Requerido</mat-error>
-        <mat-hint></mat-hint>
-      </mat-form-field>
-
-      <mat-form-field class="item-config">
-        <mat-label>Instrumento</mat-label>
-         <mat-select matNativeControl required [formControl]="instrumento" (selectionChange)="changeInstrumento($event)"> 
-            <mat-option *ngFor="let instrumento of instrumentos" [value]="instrumento.instrumento">
-              {{instrumento.instrumento}}
-            </mat-option>
-          </mat-select>
-        <mat-error *ngIf="instrumento.hasError('required')">Campo Requerido</mat-error>
-        <mat-hint></mat-hint>
-      </mat-form-field>
-
-      <mat-form-field class="item-config">
-        <mat-label>Panel</mat-label>
-         <mat-select matNativeControl required [formControl]="panel" (selectionChange)="changePanel($event)"> 
-            <mat-option *ngFor="let panel of paneles" [value]="panel.panel">
-              {{panel.panel}}
-            </mat-option>
-          </mat-select>
-        <mat-error *ngIf="panel.hasError('required')">Campo Requerido</mat-error>
-        <mat-hint></mat-hint>
-      </mat-form-field>
-
-      <mat-form-field class="item-config">
-        <mat-label>Mercado</mat-label>
-         <input matInput [formControl]="mercado" value="BCBA">
-         <mat-error *ngIf="!mercado.hasError('required')">Campo Requerido</mat-error>
-      </mat-form-field> 
-      
-      <mat-form-field class="item-config">
-        <mat-label>Activo</mat-label>
-         <mat-select matNativeControl required [formControl]="simbolo" (selectionChange)="changeTitulo($event)"> 
-            <mat-option *ngFor="let titulo of titulos" [value]="titulo.simbolo">
-              {{titulo.simbolo}}
-            </mat-option>
-          </mat-select>
-        <mat-error *ngIf="titulo.hasError('required')">Campo Requerido</mat-error>
-      </mat-form-field>
-
-      <section>
-        <mat-form-field class="item-date">
-            <input matInput [matDatepicker]="picker1" placeholder="Desde" [formControl]="fechaDesde">
-            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-            <mat-datepicker #picker1></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field class="item-date">
-            <input matInput [matDatepicker]="picker2" placeholder="Hasta" [formControl]="fechaHasta">
-            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-            <mat-datepicker #picker2></mat-datepicker>
-        </mat-form-field>
-      </section>
-      
-      <div style="padding-top: 15%; margin: 4%;">
-      <button mat-raised-button style="color:red;" (click)="logout()" class="item-config">Cerrar Sesion</button>
-      </div>
-    </form>
+   
   </mat-drawer>
   <mat-drawer-content>
     <mat-toolbar color="primary">
-      <mat-icon class="mat-icon-rtl-mirror" (click)="drawer.toggle()">dehaze</mat-icon>
+      <!-- mat-icon class="mat-icon-rtl-mirror" (click)="drawer.toggle()">dehaze</mat-icon -->
     </mat-toolbar>
-
 
     <mat-tab-group dynamicHeight>
        <mat-tab label="Cotizaciones">
+            <mat-card color="gray">
+            <mat-form-field >
+            <mat-label>Pais</mat-label>
+                <mat-select [(value)]="paises" [formControl]="pais" (selectionChange)="changePais($event)"> 
+                   <mat-option *ngFor="let pais of paises"  value="{{ pais.value }}">
+                    {{ pais.desc }}
+                  </mat-option>
+                </mat-select>
+              <mat-error *ngIf="pais.hasError('required')">Campo Requerido</mat-error>
+              <mat-hint></mat-hint>
+            </mat-form-field>
 
+            <mat-form-field>
+              <mat-label>Instrumento</mat-label>
+              <mat-select matNativeControl required [formControl]="instrumento" (selectionChange)="changeInstrumento($event)"> 
+                  <mat-option *ngFor="let instrumento of instrumentos" [value]="instrumento.instrumento">
+                    {{instrumento.instrumento}}
+                  </mat-option>
+                </mat-select>
+              <mat-error *ngIf="instrumento.hasError('required')">Campo Requerido</mat-error>
+              <mat-hint></mat-hint>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Panel</mat-label>
+              <mat-select matNativeControl required [formControl]="panel" (selectionChange)="changePanel($event)"> 
+                  <mat-option *ngFor="let panel of paneles" [value]="panel.panel">
+                    {{panel.panel}}
+                  </mat-option>
+                </mat-select>
+              <mat-error *ngIf="panel.hasError('required')">Campo Requerido</mat-error>
+              <mat-hint></mat-hint>
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Mercado</mat-label>
+              <input matInput [formControl]="mercado" value="BCBA">
+              <mat-error *ngIf="!mercado.hasError('required')">Campo Requerido</mat-error>
+            </mat-form-field> 
+            
+            <mat-form-field>
+              <mat-label>Activo</mat-label>
+              <mat-select matNativeControl required [formControl]="simbolo" (selectionChange)="changeTitulo($event)"> 
+                  <mat-option *ngFor="let titulo of titulos" [value]="titulo.simbolo">
+                    {{titulo.simbolo}}
+                  </mat-option>
+                </mat-select>
+              <mat-error *ngIf="titulo.hasError('required')">Campo Requerido</mat-error>
+            </mat-form-field>
+
+            <section>
+              <mat-form-field>
+                  <input matInput [matDatepicker]="picker1" placeholder="Desde" [formControl]="fechaDesde">
+                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                  <mat-datepicker #picker1></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field>
+                  <input matInput [matDatepicker]="picker2" placeholder="Hasta" [formControl]="fechaHasta">
+                  <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                  <mat-datepicker #picker2></mat-datepicker>
+              </mat-form-field>
+            </section>
+
+          </mat-card>
+      
           <div style="height: 60px; display: flex; margin: 3px 10px 3px 10px;"><h1 style="">{{tituloLess.descripcion}}</h1><p style="font-size: small;padding-left: 15px;">{{tituloLess.simbolo}}</p></div>
           <mat-card color="gray">
             <div>
@@ -121,7 +113,7 @@
             </div>
           </mat-card>
           <mat-card> 
-            <button mat-button style="width: 10%;"(click)="buscarOpciones()" class="item-config">Detalle de opciones</button>
+            <button mat-button style="width: 10%;"(click)="buscarOpciones()">Detalle de opciones</button>
             <table class="table-opciones" matSort (matSortChange)="sortData($event)">
               <tr>
                 <th mat-sort-header="tipoOpcion" style="width: 1%;">Tipo</th>
@@ -140,10 +132,10 @@
             </table>
           </mat-card>
           <mat-card> 
-            <button mat-button style="width: 5%;"(click)="graficar()" class="item-config">Graficar</button>
-              <mat-form-field class="example-full-width">
-                 <input matInput placeholder="" [(ngModel)]="activo" id="activoChart" >
-              </mat-form-field>
+            <button mat-button style="width: 5%;"(click)="graficar()">Graficar</button>
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="" [(ngModel)]="activo" id="activoChart" >
+            </mat-form-field>
             <div id="chartdiv" style="width: 100%; height: 50%;"></div>
             <div id="chartdivvolumen" style="width: 100%; height: 30%;"></div>
         </mat-card>
@@ -195,7 +187,7 @@
             </table>  
 
 
-            <button mat-button style="width: 200px; margin-top: 50px;"(click)="refreshPortafolio()" class="item-config">Refrescar Portafolio</button>
+            <button mat-button style="width: 200px; margin-top: 50px;"(click)="refreshPortafolio()">Refrescar Portafolio</button>
         </mat-card>
       </mat-tab>
       <mat-tab label="Operar">
@@ -252,7 +244,9 @@
         </mat-card>
       </mat-tab>
     </mat-tab-group>
-
+     <div style="padding-top: 15%; margin: 4%;">
+      <button mat-raised-button (click)="logout()" style="width:95%; color:red">Cerrar Sesion</button>
+    </div>
   </mat-drawer-content>
 </mat-drawer-container>
 
