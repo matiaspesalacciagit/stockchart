@@ -32,6 +32,7 @@ export class PageAssetQuoteComponent implements OnInit {
   mapTipoEjercicio = null;
   cotizacionActivo: Cotizacion;
   opciones: Opcion[] = [];
+  opcionesFiltradas: Cotizacion[] = [];
   activo: string;
   cuentas: Cuenta[];
   activos: Activo[];
@@ -43,6 +44,9 @@ export class PageAssetQuoteComponent implements OnInit {
   activoOperarCotizacion: Cotizacion;
   displayedColumnsPuntas: string[] = ['Cant Compra', 'Precio Compra', 'Precio Venta', 'Cant Venta'];
   messagesOperatoria: [{message: string}];
+
+  mesActual : string;
+  meses : string[] = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
   constructor(private router: Router,  private route: ActivatedRoute, private formBuilder: FormBuilder, private service: RestService, private chartService: ChartService, private datepipe: DatePipe) {   }
   ngOnInit() {
@@ -58,7 +62,7 @@ export class PageAssetQuoteComponent implements OnInit {
     this.panel = new FormControl('', Validators.required);
     this.mercado = new FormControl('BCBA', Validators.required);
     this.titulo = new FormControl('', Validators.required);
-    this.simbolo = new FormControl('', Validators.required);
+    this.simbolo = new FormControl('GGAL', Validators.required);
     this.activoOperar = new FormControl('');
     this.cantidadOperar = new FormControl('');
     this.precioOperar = new FormControl('');
@@ -68,6 +72,10 @@ export class PageAssetQuoteComponent implements OnInit {
     this.changePais(null);
     this.getEstadoCuenta();
     this.getPortafolio();
+
+    this.changeTitulo(any);
+
+    this.mesActual = this.meses[new Date().getMonth()];
   }
 
   changePais(event:any){
@@ -128,15 +136,55 @@ export class PageAssetQuoteComponent implements OnInit {
     PUT: El Precio del activo (ej. GGAL) > Precio de Ejercicio o Strike (ej. GFGC80.0AB)
 */
 
-buscarOpciones(){
+buscarOpciones(tipo: string){
   this.opciones = [];
+  this.opcionesFiltradas = [];
   let fd = this.format(this.fechaDesde.value);
   let fh = this.format(this.fechaHasta.value);
   let fecha = null;
   this.service.buscarOpciones(this.mercado.value, this.simbolo.value).subscribe(
     (opciones) => {
+      this.opciones = opciones;
         opciones.forEach(element => {
-          this.service.buscaSerieHistorica(this.mercado.value, element.simbolo, fd, fh, "sinAjustar").subscribe(
+          if(this.aplicarFiltro(element.simbolo, tipo)){
+            this.service.obtenerCotizacion(this.mercado.value, element.simbolo).subscribe(
+              cotizacion => {
+                console.log(element.simbolo) 
+                console.log(cotizacion)
+                cotizacion.simbolo = element.simbolo;
+                cotizacion.puntas = cotizacion.puntas == null || cotizacion.puntas.length == 0 ? [{cantidadCompra: 0, precioCompra: 0, precioVenta: 0, cantidadVenta: 0}] : cotizacion.puntas;
+                this.opcionesFiltradas.push(cotizacion);
+              }
+            )
+          } 
+      });
+    }
+  ); 
+}
+
+aplicarFiltro(base : string, tipo : string) : boolean {
+  let mes = base.split('.')[1];
+  let patter =  '/[^0-9.]/g';
+  mes = mes.replace(patter, '' );
+  mes = mes.substring(1,mes.length);
+  // miro si la base es del mes filtrado
+  let bolMes = (this.mesActual.toLowerCase().indexOf(mes.toLowerCase()) !== -1)
+
+  // miro la si es call o put
+  let tBase =  base.split('.')[0].substring(3,4);
+  let bolTipo = tBase == tipo;
+
+  return (bolMes && bolTipo);
+}
+
+
+filtrarCall(){
+  this.buscarOpciones("C");
+}
+filtrarPut(){
+  this.buscarOpciones("V");
+}
+/*        this.service.buscaSerieHistorica(this.mercado.value, element.simbolo, fd, fh, "sinAjustar").subscribe(
             arrayCotizaciones => {
               fecha = null;
               arrayCotizaciones.forEach(cotizacionSec => {
@@ -150,12 +198,7 @@ buscarOpciones(){
                   element.cotizacion.montoOperado += cotizacionSec.montoOperado;
                 }
               });
-              this.opciones.push(element);
-        });
-      });
-    }
-  ); 
-}
+              this.opciones.push(element);*/
 
 buscarSerieHistorica(){ 
   let fd = this.format(this.fechaDesde.value);

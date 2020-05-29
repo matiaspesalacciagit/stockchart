@@ -4,12 +4,12 @@
   </mat-drawer>
   <mat-drawer-content>
     <mat-toolbar color="primary">
-      <!-- mat-icon class="mat-icon-rtl-mirror" (click)="drawer.toggle()">dehaze</mat-icon -->
+    <mat-icon class="mat-icon-rtl-mirror" (click)="drawer.toggle()">dehaze</mat-icon>
     </mat-toolbar>
 
     <mat-tab-group dynamicHeight>
        <mat-tab label="Cotizaciones">
-            <mat-card color="gray">
+            <!-- mat-card color="gray">
             <mat-form-field >
             <mat-label>Pais</mat-label>
                 <mat-select [(value)]="paises" [formControl]="pais" (selectionChange)="changePais($event)"> 
@@ -72,8 +72,8 @@
               </mat-form-field>
             </section>
 
-          </mat-card>
-      
+          </mat-card -->
+          
           <div style="height: 60px; display: flex; margin: 3px 10px 3px 10px;"><h1 style="">{{tituloLess.descripcion}}</h1><p style="font-size: small;padding-left: 15px;">{{tituloLess.simbolo}}</p></div>
           <mat-card color="gray">
             <div>
@@ -113,32 +113,46 @@
             </div>
           </mat-card>
           <mat-card> 
-            <button mat-button style="width: 10%;"(click)="buscarOpciones()">Detalle de opciones</button>
+            <!-- button mat-button style="width: 10%;"(click)="buscarOpciones()">Listar Opciones</button -->
+            <mat-form-field>
+              <mat-label>Mes</mat-label>
+              <mat-select  [(ngModel)]="mesActual"> 
+                  <mat-option *ngFor="let mes of meses" [value]="mes">
+                    {{mes}}
+                  </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <button mat-button style="width: 10%;"(click)="filtrarCall()">Call</button>
+            <button mat-button style="width: 10%;"(click)="filtrarPut()">Put</button>
             <table class="table-opciones" matSort (matSortChange)="sortData($event)">
               <tr>
-                <th mat-sort-header="tipoOpcion" style="width: 1%;">Tipo</th>
                 <th mat-sort-header="simbolo" style="width: 5%;">Simbolo</th>
-                <th mat-sort-header="montoOperado" style="width: 5%;">Monto</th>
-                <th mat-sort-header="ultimoPrecio" style="width: 5%;">Ultimo Precio</th>
+                <!-- th mat-sort-header="montoOperado" style="width: 5%;">Monto</th -->
+                <th mat-sort-header="cantidadCompra" style="width: 5%;">Cant Compra</th>
+                <th mat-sort-header="precioCompra" style="width: 5%;">Precio Compra</th>
+                <th mat-sort-header="cantidadVenta" style="width: 5%;">Cant Venta</th>
+                <th mat-sort-header="precioVenta" style="width: 5%;">Precio Venta</th>
               </tr>
-              <tr *ngFor="let opcion of opciones; let idx=index; let even=even" 
+              <tr *ngFor="let opcion of opcionesFiltradas; let idx=index; let even=even" 
                 [style.background-color]="opcion.rowClicked ? 'f9f889' : (even ? '#fff' : '#efefef')"
                 (click)="(opcion.rowClicked = !opcion.rowClicked); setActivoWitchChart(opcion);">
-                <td>{{opcion.tipoOpcion}}</td>
                 <td>{{opcion.simbolo}}</td>
-                <td>{{opcion.cotizacion.montoOperado | currency}}</td>
-                <td>{{opcion.cotizacion.ultimoPrecio}}</td>
+                <!-- td>{{opcion.montoOperado | currency}}</td -->
+                <td>{{opcion.puntas[0].cantidadCompra}}</td>
+                <td>{{opcion.puntas[0].precioCompra}}</td>
+                <td>{{opcion.puntas[0].cantidadVenta}}</td>
+                <td>{{opcion.puntas[0].precioVenta}}</td>
               </tr>
             </table>
           </mat-card>
-          <mat-card> 
+          <!-- mat-card> 
             <button mat-button style="width: 5%;"(click)="graficar()">Graficar</button>
             <mat-form-field class="example-full-width">
               <input matInput placeholder="" [(ngModel)]="activo" id="activoChart" >
             </mat-form-field>
             <div id="chartdiv" style="width: 100%; height: 50%;"></div>
             <div id="chartdivvolumen" style="width: 100%; height: 30%;"></div>
-        </mat-card>
+        </mat-card -->
       </mat-tab>
       
       

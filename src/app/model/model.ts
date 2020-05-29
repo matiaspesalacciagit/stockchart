@@ -21,7 +21,7 @@ export interface Puntas {
 
 export interface Titulo {
     simbolo: string;
-    puntas: Puntas;
+    puntas: Puntas[];
     ultimoPrecio: number;
     variacionPorcentual: number;
     apertura: number;
@@ -52,11 +52,12 @@ export interface Cotizacion {
     montoOperado: number;
     precioAjuste: number;
     precioPromedio: number;
-    puntas: Puntas
+    puntas: Puntas[];
     tendencia: string;
     ultimoPrecio: number;
     variacion: number;
     volumenNominal: number;
+    simbolo: string;
 }
 
 export interface PanelCotizacion{
@@ -66,7 +67,6 @@ export interface PanelCotizacion{
 }
 
 export interface Opcion{
-
     cotizacion: Cotizacion;
     simboloSubyacente: string;
     fechaVencimiento: string;
