@@ -7,22 +7,24 @@ import { TokenIOL, TituloLess, Cotizacion } from '../model/model';
   providedIn: 'root'
 })
 export class RestService {
-
   // https://api.invertironline.com
-  endpoint = "";                            
+  endpoint = '';
   token: TokenIOL;
-  serieHistorica: Array<Object>;
+  serieHistorica: any[];
   tituloLess: TituloLess;
- 
-  constructor(private http: HttpClient) { }
+
+  constructor(private http: HttpClient) {}
 
   logIn(username: string, password: string, granType: string): Observable<any> {
     const url = this.endpoint + '/token';
-    const body = new HttpParams().set('username', username).set('password', password).set('grant_type', granType);
+    const body = new HttpParams()
+      .set('username', username)
+      .set('password', password)
+      .set('grant_type', granType);
     const headers = new HttpHeaders();
     headers.append('Content-Type', 'application/x-www-form-urlencoded');
     headers.append('Cache-Control', 'no-cache');
-    return this.http.post(url, body.toString(), { headers: headers });
+    return this.http.post(url, body.toString(), { headers });
   }
 
   setUserLogged(): any {
@@ -30,10 +32,10 @@ export class RestService {
   }
 
   getUserLoggedIn() {
-  	return JSON.parse(localStorage.getItem('token'));
+    return JSON.parse(localStorage.getItem('token'));
   }
-  
-  logout(): any{
+
+  logout(): any {
     this.token = null;
     localStorage.setItem('token', null);
   }
@@ -42,7 +44,8 @@ export class RestService {
     if (this.token && this.token.access_token) {
       const autToken = 'Bearer ' + this.token.access_token;
       const url = this.endpoint + '/api/v2/' + mercado + '/Titulos/' + simbolo + '/Opciones';
-      return this.http.get(url, {headers : new HttpHeaders( {'Authorization': autToken, 'Content-Type': 'application/x-www-form-urlencoded' }) } );
+      return this.http.get(url, {
+        headers: new HttpHeaders({ Authorization: autToken, 'Content-Type': 'application/x-www-form-urlencoded' }) });
     }
     return null;
   }
@@ -50,26 +53,27 @@ export class RestService {
   buscaSerieHistorica(mercado: string, simbolo: string, fechaDesde: string, fechaHasta: string, ajustada: string): Observable<any> {
     if (this.token && this.token.access_token) {
       const autToken = 'Bearer ' + this.token.access_token;
-      const url = this.endpoint + '/api/v2/' + mercado + '/Titulos/' + simbolo + '/Cotizacion/seriehistorica/'+ fechaDesde + "/" + fechaHasta + "/" + ajustada ;
-      return this.http.get(url, {headers : new HttpHeaders( {'Authorization': autToken})} );
+      const url =
+        `${this.endpoint}/api/v2/${mercado}/Titulos/${simbolo}/Cotizacion/seriehistorica/${fechaDesde}/${fechaHasta}/${ajustada}`;
+      return this.http.get(url, { headers: new HttpHeaders({ Authorization: autToken }) });
     }
     return null;
   }
 
-  buscarTitulo(mercado: string, simbolo: string):  Observable<any> {
+  buscarTitulo(mercado: string, simbolo: string): Observable<any> {
     if (this.token && this.token.access_token) {
       const autToken = 'Bearer ' + this.token.access_token;
       const url = this.endpoint + '/api/v2/' + mercado + '/Titulos/' + simbolo;
-      return this.http.get(url, {headers : new HttpHeaders( {'Authorization': autToken})} );
+      return this.http.get(url, { headers: new HttpHeaders({ Authorization: autToken }) });
     }
     return null;
   }
 
-  obtenerCotizacion(mercado: string, simbolo: string):  Observable<any> {
+  obtenerCotizacion(mercado: string, simbolo: string): Observable<any> {
     if (this.token && this.token.access_token) {
       const autToken = 'Bearer ' + this.token.access_token;
       const url = this.endpoint + '/api/v2/' + mercado + '/Titulos/' + simbolo + '/Cotizacion';
-      return this.http.get(url, {headers : new HttpHeaders( {'Authorization': autToken})} );
+      return this.http.get(url, { headers: new HttpHeaders({ Authorization: autToken }) });
     }
     return null;
   }
@@ -78,15 +82,15 @@ export class RestService {
     if (this.token && this.token.access_token) {
       const autToken = 'Bearer ' + this.token.access_token;
       const url = this.endpoint + '/api/v2/' + pais + '/Titulos/Cotizacion/Instrumentos';
-      return this.http.get(url, {headers : new HttpHeaders( {'Authorization': autToken})} );
+      return this.http.get(url, { headers: new HttpHeaders({ Authorization: autToken }) });
     }
     return null;
   }
   buscarPaneles(pais: string, instrumento: string): Observable<any> {
     if (this.token && this.token.access_token) {
       const autToken = 'Bearer ' + this.token.access_token;
-      const url = this.endpoint + '/api/v2/' + pais + '/Titulos/Cotizacion/Paneles/'+ instrumento;
-      return this.http.get(url, {headers : new HttpHeaders( {'Authorization': autToken})} );
+      const url = this.endpoint + '/api/v2/' + pais + '/Titulos/Cotizacion/Paneles/' + instrumento;
+      return this.http.get(url, { headers: new HttpHeaders({ Authorization: autToken }) });
     }
     return null;
   }
@@ -94,8 +98,8 @@ export class RestService {
   buscarActivos(instrumento: string, panel: string, pais: string): Observable<any> {
     if (this.token && this.token.access_token) {
       const autToken = 'Bearer ' + this.token.access_token;
-      const url = this.endpoint + '/api/v2/Cotizaciones/'+ instrumento + '/' + panel +'/' + pais;
-      return this.http.get(url, {headers : new HttpHeaders( {'Authorization': autToken})} );
+      const url = this.endpoint + '/api/v2/Cotizaciones/' + instrumento + '/' + panel + '/' + pais;
+      return this.http.get(url, { headers: new HttpHeaders({ Authorization: autToken }) });
     }
     return null;
   }
@@ -103,8 +107,8 @@ export class RestService {
   estadoDeCuenta() {
     if (this.token && this.token.access_token) {
       const autToken = 'Bearer ' + this.token.access_token;
-      const url = this.endpoint + '/api/v2/estadocuenta' ;
-      return this.http.get(url, {headers : new HttpHeaders( {'Authorization': autToken})} );
+      const url = this.endpoint + '/api/v2/estadocuenta';
+      return this.http.get(url, { headers: new HttpHeaders({ Authorization: autToken }) });
     }
     return null;
   }
@@ -112,28 +116,28 @@ export class RestService {
   portafolio() {
     if (this.token && this.token.access_token) {
       const autToken = 'Bearer ' + this.token.access_token;
-      const url = this.endpoint + '/api/v2/portafolio' ;
-      return this.http.get(url, {headers : new HttpHeaders( {'Authorization': autToken})} );
+      const url = this.endpoint + '/api/v2/portafolio';
+      return this.http.get(url, { headers: new HttpHeaders({ Authorization: autToken }) });
     }
     return null;
   }
   comprar(mercado: string, simbolo: string, cantidad: string, precio: string, validez: string) {
-    const orden = {mercado: mercado, simbolo: simbolo, cantidad: cantidad, precio: precio, plazo: 't0', validez: validez }
+    const orden = { mercado, simbolo, cantidad, precio, plazo: 't0', validez };
     if (this.token && this.token.access_token) {
       const autToken = 'Bearer ' + this.token.access_token;
-      const url = this.endpoint + '/api/v2/operar/Comprar' ;
-      return this.http.post(url, orden, {headers : new HttpHeaders( {'Authorization': autToken})} );
+      const url = this.endpoint + '/api/v2/operar/Comprar';
+      return this.http.post(url, orden, { headers: new HttpHeaders({ Authorization: autToken }) });
     }
     return null;
   }
 
   vender(mercado: string, simbolo: string, cantidad: string, precio: string, validez: string) {
-    const orden = {mercado: mercado, simbolo: simbolo, cantidad: cantidad, precio: precio, plazo: 't0', validez: validez }
+    const orden = { mercado, simbolo, cantidad, precio, plazo: 't0', validez };
     if (this.token && this.token.access_token) {
       const autToken = 'Bearer ' + this.token.access_token;
-      const url = this.endpoint + '/api/v2/operar/Vender' ;
-      return this.http.post(url, orden, {headers : new HttpHeaders( {'Authorization': autToken})} );
+      const url = this.endpoint + '/api/v2/operar/Vender';
+      return this.http.post(url, orden, { headers: new HttpHeaders({ Authorization: autToken }) });
     }
     return null;
-  }  
+  }
 }
