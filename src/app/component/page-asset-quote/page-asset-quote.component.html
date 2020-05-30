@@ -127,6 +127,7 @@
             <table class="table-opciones" matSort (matSortChange)="sortData($event)">
               <tr>
                 <th mat-sort-header="simbolo" style="width: 5%;">Simbolo</th>
+                <th mat-sort-header="estado" style="width: 5%;">Estado</th>
                 <!-- th mat-sort-header="montoOperado" style="width: 5%;">Monto</th -->
                 <th mat-sort-header="cantidadCompra" style="width: 5%;">Cant Compra</th>
                 <th mat-sort-header="precioCompra" style="width: 5%;">Precio Compra</th>
@@ -137,6 +138,7 @@
                 [style.background-color]="opcion.rowClicked ? 'f9f889' : (even ? '#fff' : '#efefef')"
                 (click)="(opcion.rowClicked = !opcion.rowClicked); setActivoWitchChart(opcion);">
                 <td>{{opcion.simbolo}}</td>
+                <td>{{opcion.estado}}</td>
                 <!-- td>{{opcion.montoOperado | currency}}</td -->
                 <td>{{opcion.puntas[0].cantidadCompra}}</td>
                 <td>{{opcion.puntas[0].precioCompra}}</td>
@@ -204,7 +206,7 @@
             <button mat-button style="width: 200px; margin-top: 50px;"(click)="refreshPortafolio()">Refrescar Portafolio</button>
         </mat-card>
       </mat-tab>
-      <mat-tab label="Operar">
+      <!-- mat-tab label="Operar">
         <mat-card>
           
           <div>
@@ -256,7 +258,7 @@
             {{ item.message }}
           </li>
         </mat-card>
-      </mat-tab>
+      </mat-tab -->
     </mat-tab-group>
      <div style="padding-top: 15%; margin: 4%;">
       <button mat-raised-button (click)="logout()" style="width:95%; color:red">Cerrar Sesion</button>
