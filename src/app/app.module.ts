@@ -1,18 +1,18 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { DatePipe } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { MAT_DATE_LOCALE, } from '@angular/material';
-import { AppRoutingModule } from './app-routing.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MaterialModule } from './material.module';
-import { RestService } from './service/rest.service';
-import { GuardService } from './service/guard.service';
 import { PageAssetQuoteComponent } from './component/page-asset-quote/page-asset-quote.component';
 import { PageLoginComponent } from './component/page-login/page-login.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { MaterialModule } from './material.module';
 import { ChartService } from './service/chart.service';
-import { DatePipe } from '@angular/common';
+import { GuardService } from './service/guard.service';
+import { RestService } from './service/rest.service';
 
 @NgModule({
   declarations: [
