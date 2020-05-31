@@ -105,14 +105,14 @@ export class BullSpreadComponent implements OnInit{
         const constoInicial = precioCompra - precioVenta;
         const puntoMuerto = callAComprar.base + constoInicial;
         const perdidaMaxima =  -constoInicial;
-        const ganancaMaxima = callALanzar.base - callAComprar.base - precioVenta + precioCompra;
+        const gananciaMaxima = callALanzar.base - callAComprar.base - precioVenta + precioCompra;
         
 
         const par: any = {   
           puntoMuerto,
-          puntaje: ganancaMaxima/-perdidaMaxima,    
+          puntaje: gananciaMaxima/-perdidaMaxima,    
           perdidaMaxima,
-          ganancaMaxima,
+          gananciaMaxima: gananciaMaxima,
           precioCompra,
           precioVenta,
           callAComprarBase: callAComprar.base,
