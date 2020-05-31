@@ -30,6 +30,7 @@
     "express-http-proxy": "^1.6.0",
     "http-proxy": "^1.18.1",
     "http-proxy-middleware": "^1.0.4",
+    "ngx-propserve": "^0.1.4",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "utf-8-validate": "^5.0.2",

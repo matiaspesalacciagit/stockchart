@@ -1,6 +1,5 @@
 <mat-drawer-container class="example-container" >
-  <mat-drawer #drawer [mode]="true" class="example-sidenav-content">
-   
+  <mat-drawer #drawer [mode]="true" class="example-sidenav-content">   
   </mat-drawer>
   <mat-drawer-content>
     <mat-toolbar color="primary">
@@ -51,7 +50,7 @@
             
             <mat-form-field>
               <mat-label>Activo</mat-label>
-              <mat-select matNativeControl required [formControl]="simbolo" (selectionChange)="changeTitulo($event)"> 
+              <mat-select matNativeControl required [formControl]="simbolo" (selectionChange)="changeTitulo()"> 
                   <mat-option *ngFor="let titulo of titulos" [value]="titulo.simbolo">
                     {{titulo.simbolo}}
                   </mat-option>
@@ -74,7 +73,7 @@
 
           </mat-card -->
           
-          <div style="height: 60px; display: flex; margin: 3px 10px 3px 10px;"><h1 style="">{{tituloLess.descripcion}}</h1><p style="font-size: small;padding-left: 15px;">{{tituloLess.simbolo}}</p></div>
+          <div style="height: 60px; display: flex; margin: 3px 10px 3px 10px;"><h1>{{tituloLess.descripcion}}</h1><p style="font-size: small;padding-left: 15px;">{{tituloLess.simbolo}}</p></div>
           <mat-card color="gray">
             <div>
               <table class="table table-striped">
@@ -160,15 +159,14 @@
       
       <mat-tab label="Cuenta">
         <mat-card> 
-          <div><h3>Mi Cuenta</h3></div>
+          <h3>Mi Cuenta</h3>
           <ul *ngFor="let cuenta of cuentas; let i = index">
               <p>Saldo disponible en {{cuenta.tipo === 'inversion_Argentina_Pesos' ? 'Pesos' : 'Dolares'}}  <b>{{cuenta.disponible | currency}} </b></p>
           </ul>
         </mat-card>
 
         <mat-card> 
-          <div><h3>Portafolio</h3></div>
-            
+          <h3>Portafolio</h3>            
             <table mat-table [dataSource]="activos" class="mat-elevation-z0" style="width:100%;">
               <ng-container matColumnDef="Activo">
                 <th mat-header-cell *matHeaderCellDef>Activo</th>
@@ -259,6 +257,17 @@
           </li>
         </mat-card>
       </mat-tab -->
+
+    <mat-tab label="Estrategia">
+
+      <app-bull-spread [activoSubyacente]="cotizacionActivo"></app-bull-spread>
+
+
+    </mat-tab>
+
+
+
+
     </mat-tab-group>
      <div style="padding-top: 15%; margin: 4%;">
       <button mat-raised-button (click)="logout()" style="width:95%; color:red">Cerrar Sesion</button>

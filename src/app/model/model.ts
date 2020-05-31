@@ -58,6 +58,7 @@ export interface Cotizacion {
     variacion: number;
     volumenNominal: number;
     simbolo: string;
+    base: number;
     estado: string;
 }
 

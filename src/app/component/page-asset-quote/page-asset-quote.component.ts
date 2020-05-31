@@ -5,7 +5,7 @@ import { RestService } from '../../service/rest.service';
 import { Titulo, TituloLess, Cotizacion, Opcion, EstadoCuenta, Cuenta, Activo, Puntas, Pais } from '../../model/model';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ChartService } from 'src/app/service/chart.service';
-import { Sort } from '@angular/material';
+import { Sort } from '@angular/material/sort';
 import { DatePipe } from '@angular/common';
 import { string } from '@amcharts/amcharts4/core';
 import { any } from '@amcharts/amcharts4/.internal/core/utils/Array';
@@ -75,7 +75,7 @@ export class PageAssetQuoteComponent implements OnInit {
     //this.getEstadoCuenta();
     //this.getPortafolio();
 
-    this.changeTitulo(any); // siempre por ahora es GALICIA
+    this.changeTitulo(); // siempre por ahora es GALICIA
     this.mesActual = this.meses[new Date().getMonth()];
   }
 
@@ -106,7 +106,7 @@ export class PageAssetQuoteComponent implements OnInit {
     )
   }*/
 
-  changeTitulo(event:any){
+  changeTitulo(){
     this.service.buscarTitulo(this.mercado.value, this.simbolo.value).subscribe(
       data => {
         this.service.obtenerCotizacion(this.mercado.value, this.simbolo.value).subscribe(
@@ -148,9 +148,9 @@ buscarOpciones(tipo: string){
         opciones.forEach(element => {
           if(this.aplicarFiltro(element.simbolo, tipo)){
             this.service.obtenerCotizacion(this.mercado.value, element.simbolo).subscribe(
-              opcion => {
+              opcion => {        
                 opcion.simbolo = element.simbolo.replace(new RegExp('^[A-Z]+'), '').replace(new RegExp('[A-Z]+$'), '');
-                opcion.estado = this.mapTipoEjercicio.get(this.cotizacionActivo.ultimoPrecio > opcion.simbolo ? 'Activo>' + tipo : 'Activo<' + tipo)
+                opcion.estado = this.mapTipoEjercicio.get(Number(this.cotizacionActivo.ultimoPrecio) > Number(opcion.simbolo) ? 'Activo>' + tipo : 'Activo<' + tipo)
                 opcion.puntas = opcion.puntas == null || opcion.puntas.length == 0 ? [{cantidadCompra: 0, precioCompra: 0, precioVenta: 0, cantidadVenta: 0}] : opcion.puntas;
                 this.opcionesFiltradas.push(opcion);
               } 
@@ -161,9 +161,10 @@ buscarOpciones(tipo: string){
   ); 
 }
 
+
 aplicarFiltro(base : string, tipo : string) : boolean {
   let mes = base.split('.')[1];
-  mes = mes.replace(new RegExp('^[0-9]+'), '' );
+  mes = mes.replace(/^[0-9]+/g, '' );
   // miro si la base es del mes filtrado
   let bolMes = (this.mesActual.toLowerCase().indexOf(mes.toLowerCase()) !== -1)
 

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { TokenIOL, TituloLess, Cotizacion } from '../model/model';
-
+import { TokenIOL, TituloLess, Cotizacion, Opcion } from '../model/model';
+import { map } from 'rxjs/operators'
 @Injectable({
   providedIn: 'root'
 })
@@ -40,13 +40,14 @@ export class RestService {
     localStorage.setItem('token', null);
   }
 
-  buscarOpciones(mercado: string, simbolo: string): Observable<any> {
+  buscarOpciones(mercado: string, simbolo: string) {
     if (this.token && this.token.access_token) {
       const autToken = 'Bearer ' + this.token.access_token;
       const url = this.endpoint + '/api/v2/' + mercado + '/Titulos/' + simbolo + '/Opciones';
-      return this.http.get(url, {
+      return this.http.get<Opcion[]>(url, {
         headers: new HttpHeaders({ Authorization: autToken, 'Content-Type': 'application/x-www-form-urlencoded' }) });
     }
+    //Todo tirar una observable fallando.
     return null;
   }
 
@@ -69,11 +70,15 @@ export class RestService {
     return null;
   }
 
-  obtenerCotizacion(mercado: string, simbolo: string): Observable<any> {
+  obtenerCotizacion(mercado: string, simbolo: string): Observable<Cotizacion> {
     if (this.token && this.token.access_token) {
-      const autToken = 'Bearer ' + this.token.access_token;
-      const url = this.endpoint + '/api/v2/' + mercado + '/Titulos/' + simbolo + '/Cotizacion';
-      return this.http.get(url, { headers: new HttpHeaders({ Authorization: autToken }) });
+      const Authorization = `Bearer ${this.token.access_token}`;
+      const url = `${this.endpoint}/api/v2/${mercado}/Titulos/${simbolo}/Cotizacion`;
+      const headers = new HttpHeaders({ Authorization });
+
+      return this.http.get<Cotizacion>(url, { headers }).pipe(
+        map( cotizacion => ({...cotizacion, simbolo }) 
+      ));
     }
     return null;
   }

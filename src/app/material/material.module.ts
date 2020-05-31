@@ -66,11 +66,11 @@ import {  NativeDateAdapter} from '@angular/material/core';
 })
 export class MaterialModule {}
 
-export class MyDateAdapter extends NativeDateAdapter {
-  format(date: Date, displayFormat: any): string {
-    const day = date.getDay();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  }
-}
+// export class MyDateAdapter extends NativeDateAdapter {
+//   format(date: Date, displayFormat: any): string {
+//     const day = date.getDay();
+//     const month = date.getMonth() + 1;
+//     const year = date.getFullYear();
+//     return `${day}/${month}/${year}`;
+//   }
+// }

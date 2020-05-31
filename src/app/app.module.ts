@@ -9,16 +9,18 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { PageAssetQuoteComponent } from './component/page-asset-quote/page-asset-quote.component';
 import { PageLoginComponent } from './component/page-login/page-login.component';
-import { MaterialModule } from './material.module';
+import { MaterialModule } from './material/material.module';
 import { ChartService } from './service/chart.service';
 import { GuardService } from './service/guard.service';
 import { RestService } from './service/rest.service';
+import { BullSpreadComponent } from './component/bull-spread/bull-spread.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PageLoginComponent,
-    PageAssetQuoteComponent
+    PageAssetQuoteComponent,
+    BullSpreadComponent
   ],
   imports: [
     BrowserModule,

@@ -66,8 +66,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-              "proxyConfig": "proxy.config.js",
-
+            "proxyConfig": "proxy.config.js",
             "browserTarget": "stockchart:build"
           },
           "configurations": {
@@ -125,6 +124,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "stockchart"
+    }
+  },
+  "defaultProject": "stockchart",
+  "cli": {
+    "analytics": "b74d9f24-59f5-4694-ae63-be752159e869"
+  }
 }
