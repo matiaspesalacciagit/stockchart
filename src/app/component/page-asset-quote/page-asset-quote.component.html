@@ -1,9 +1,9 @@
-<mat-drawer-container class="example-container" >
+<!-- <mat-drawer-container class="example-container" >
   <mat-drawer #drawer [mode]="true" class="example-sidenav-content">   
   </mat-drawer>
-  <mat-drawer-content>
+  <mat-drawer-content> -->
     <mat-toolbar color="primary">
-    <mat-icon class="mat-icon-rtl-mirror" (click)="drawer.toggle()">dehaze</mat-icon>
+    <!-- <mat-icon class="mat-icon-rtl-mirror" (click)="drawer.toggle()">dehaze</mat-icon> -->
     </mat-toolbar>
 
     <mat-tab-group dynamicHeight>
@@ -203,6 +203,11 @@
 
             <button mat-button style="width: 200px; margin-top: 50px;"(click)="refreshPortafolio()">Refrescar Portafolio</button>
         </mat-card>
+
+        <mat-card>
+          <button mat-button style="width: 200px; margin-top: 50px;"(click)="consultarOperaciones()">Operaciones</button>
+            {{ operaciones | json }}
+        </mat-card>
       </mat-tab>
       <!-- mat-tab label="Operar">
         <mat-card>
@@ -272,7 +277,7 @@
      <div style="padding-top: 15%; margin: 4%;">
       <button mat-raised-button (click)="logout()" style="width:95%; color:red">Cerrar Sesion</button>
     </div>
-  </mat-drawer-content>
-</mat-drawer-container>
+ <!--  </mat-drawer-content>
+</mat-drawer-container> -->
 
  

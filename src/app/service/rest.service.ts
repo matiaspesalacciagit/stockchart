@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { TokenIOL, TituloLess, Cotizacion, Opcion } from '../model/model';
+import { TokenIOL, TituloLess, Cotizacion, Opcion, Operacion } from '../model/model';
 import { map } from 'rxjs/operators'
 @Injectable({
   providedIn: 'root'
@@ -24,6 +24,7 @@ export class RestService {
     const headers = new HttpHeaders();
     headers.append('Content-Type', 'application/x-www-form-urlencoded');
     headers.append('Cache-Control', 'no-cache');
+    localStorage.setItem('cred', JSON.stringify({username: username, password: password}));
     return this.http.post(url, body.toString(), { headers });
   }
 
@@ -126,6 +127,16 @@ export class RestService {
     }
     return null;
   }
+
+  operaciones(number: string): Observable<any>{
+    if (this.token && this.token.access_token) {
+      const autToken = 'Bearer ' + this.token.access_token;
+      const url = this.endpoint + '/api/v2/operaciones' + number;
+      return this.http.get(url, { headers: new HttpHeaders({ Authorization: autToken }) });
+    }
+    return null;
+  }
+
   comprar(mercado: string, simbolo: string, cantidad: string, precio: string, validez: string) {
     const orden = { mercado, simbolo, cantidad, precio, plazo: 't0', validez };
     if (this.token && this.token.access_token) {

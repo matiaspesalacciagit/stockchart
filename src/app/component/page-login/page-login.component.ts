@@ -9,14 +9,19 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./page-login.component.css']
 })
 export class PageLoginComponent implements OnInit {
-  username: string = "";
-  password: string = "";
+  username: string;
+  password: string;
 
   constructor(private router: Router, private service: RestService) {  }
   ngOnInit(): void {
   }
 
   login() {
+    if (JSON.parse(localStorage.getItem('cred'))){
+      this.username = JSON.parse(localStorage.getItem('cred'))['username'];
+      this.password = JSON.parse(localStorage.getItem('cred'))['password'];
+    };
+    
     const response = this.service.logIn(this.username, this.password, 'password').subscribe(
       (data) => {
         this.service.token = data;

@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, FormArray } from '@angular/forms';
 import { RestService } from '../../service/rest.service';
 
-import { Titulo, TituloLess, Cotizacion, Opcion, EstadoCuenta, Cuenta, Activo, Puntas, Pais } from '../../model/model';
+import { Titulo, TituloLess, Cotizacion, Opcion, EstadoCuenta, Cuenta, Activo, Puntas, Pais, Operacion } from '../../model/model';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ChartService } from 'src/app/service/chart.service';
 import { Sort } from '@angular/material/sort';
 import { DatePipe } from '@angular/common';
 import { string } from '@amcharts/amcharts4/core';
 import { any } from '@amcharts/amcharts4/.internal/core/utils/Array';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-page-asset-quote',
@@ -36,6 +37,7 @@ export class PageAssetQuoteComponent implements OnInit {
   activo: string;
   cuentas: Cuenta[];
   activos: Activo[];
+  
   displayedColumnsPortafolio: string[] = ['Activo', 'Cantidad', 'Variación diaria', 'Último Precio', 'PPC', 'Ganancia-Pérdida', 'Saldo Valorizado'];
   //activoOperar: FormControl;
   cantidadOperar: FormControl;
@@ -48,6 +50,7 @@ export class PageAssetQuoteComponent implements OnInit {
   mesActual : string;
   meses : string[] = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
+  operaciones = new Subject<Operacion[]>().asObservable;
   constructor(private router: Router,  private route: ActivatedRoute, private formBuilder: FormBuilder, private service: RestService, private chartService: ChartService, private datepipe: DatePipe) {   }
   ngOnInit() {
     //this.paises = [{ value: 'argentina', desc: 'Argentina'}, { value: 'estados_Unidos',  desc: 'EEUU'}, { value: 'brasil', desc: 'Brasil'}, { value: 'chile', desc: 'Chile'}, { value: 'colombia', desc: 'Colombia'}, { value: 'mexico', desc: 'Mexico'}];
@@ -64,7 +67,7 @@ export class PageAssetQuoteComponent implements OnInit {
     //this.panel = new FormControl('', Validators.required);
     this.mercado = new FormControl('BCBA', Validators.required);
     //this.titulo = new FormControl('', Validators.required);
-    this.simbolo = new FormControl('GGAL', Validators.required);
+    this.simbolo = new FormControl('COME', Validators.required);
     //this.activoOperar = new FormControl('');
     //this.cantidadOperar = new FormControl('');
     //this.precioOperar = new FormControl('');
@@ -275,6 +278,14 @@ buscarSerieHistorica(){
   }
 
 
+  consultarOperaciones(){
+    let numberOperacion = "";
+    this.service.operaciones(numberOperacion).subscribe(
+      result => {
+        this.operaciones = result;
+      }
+    );
+  }
 
   /*buscarCotizacionActivoAOperar(){
     this.service.obtenerCotizacion(this.mercado.value, this.activoOperar.value).subscribe(

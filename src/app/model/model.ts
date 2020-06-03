@@ -160,3 +160,20 @@ export interface Pais {
     value: string;
     desc: string;
 }
+
+export interface Operacion {
+    numero: number;
+    fechaOrden: string;
+    tipo: string;
+    estado: string;
+    mercado: string;
+    simbolo: string;
+    cantidad: number;
+    monto: number;
+    modalidad: string;
+    precio: number;
+    fechaOperada: string;
+    cantidadOperada: number;
+    precioOperado: number;
+    montoOperado: number
+}

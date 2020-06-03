@@ -12,7 +12,13 @@
             {{month.label}}
           </mat-option>
         </mat-select>
+        
     </mat-form-field>
+    <mat-form-field>
+      <mat-label>Lotes</mat-label>
+      <input matInput formControlName="loteOperar">
+    </mat-form-field>
+   
     <button mat-button (click)="search()">Analizar</button>
     <button mat-button (click)="clearCache()">Limpiar Chache</button>
 

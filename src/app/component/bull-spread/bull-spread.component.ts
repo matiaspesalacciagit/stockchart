@@ -30,8 +30,9 @@ export class BullSpreadComponent implements OnInit{
     public dateService: DateService) { }
 
   form = this.fb.group({
-    subyacente: ['GGAL'],
-    month: ['JU']
+    subyacente: ['COME'],
+    month: ['JU'],
+    loteOperar: ['10']
   });
   
   searchSubject = new Subject<void>();
@@ -40,12 +41,16 @@ export class BullSpreadComponent implements OnInit{
     startWith(this.form.get('month').value)
   ); 
 
+  changeLotes$: Observable<string> = this.form.get('loteOperar').valueChanges.pipe(
+    startWith(this.form.get('loteOperar').value)
+  );
+
   // ultimate courses => mgalante@gmail.com / Baile786u
 
   
   info$ = this.search$.pipe(    
     switchMapTo(this.activoSubyacente$),
-    withLatestFrom(this.selectedMonth$),
+    withLatestFrom(this.selectedMonth$, this.changeLotes$),
     switchMap(([activoSubyacente, month]) => this.getCotizaciones(
       activoSubyacente, month)
     ),
@@ -89,38 +94,37 @@ export class BullSpreadComponent implements OnInit{
 
   getBullData(cotizaciones: Cotizacion[]) {
 
-    const pares: Par[] = [];
+    const pares: any[] = [];
     for(let i = 0; i < cotizaciones.length - 1; i++) {
       const callAComprar = cotizaciones[i];
       for(let j = i+1; j < cotizaciones.length; j++) {
         const callALanzar = cotizaciones[j];
-        const precioCompra = this.getCompraReal(callAComprar.puntas, 50);
-        const precioVenta = this.getVentaReal(callALanzar.puntas, 50);
+        const precioCompra = this.getCompraReal(callAComprar.puntas, 1);
+        const precioVenta = this.getVentaReal(callALanzar.puntas, 1);
         
         if(!precioCompra || !precioVenta) {
           continue;
         }
         
-        const distancia = callALanzar.base - callAComprar.base;
-        const constoInicial = precioCompra - precioVenta;
-        const puntoMuerto = callAComprar.base + constoInicial;
-        const perdidaMaxima =  -constoInicial;
-        const ganancaMaxima = callALanzar.base - callAComprar.base - precioVenta + precioCompra;
+        const diferenciaEntreBases = callALanzar.base - callAComprar.base;
+        const costoInicial = precioCompra - precioVenta;
+        const puntoMuerto = callAComprar.base + costoInicial;
+        const gananciaMaxima = callALanzar.base - callAComprar.base - costoInicial;
         
 
         const par: any = {   
-          puntoMuerto,
-          puntaje: ganancaMaxima/-perdidaMaxima,    
-          perdidaMaxima,
-          ganancaMaxima,
+          diferenciaEntreBases,
+          puntaje: costoInicial/diferenciaEntreBases,
+          gananciaPorPesoInvertido: (diferenciaEntreBases/costoInicial) - 1,
+          costoInicial,
+          //puntoMuerto,
+          ganancaMaxima: gananciaMaxima,
           precioCompra,
           precioVenta,
-          callAComprarBase: callAComprar.base,
-          callALanzarBase: callALanzar.base,
+          //callAComprarBase: callAComprar.base,
+          //callALanzarBase: callALanzar.base,
           simboloCompra: callAComprar.simbolo,
           simboloVenta: callALanzar.simbolo,
-          distancia,
-          diferencia: constoInicial + distancia
         }        
        
        // if(par.puntaje > 0.5) {
@@ -128,7 +132,7 @@ export class BullSpreadComponent implements OnInit{
         //}
       }
     }
-    return pares;
+    return pares.sort( (x, y) => x.puntaje - y.puntaje);
     // vender la que esta OTM
   }
       
@@ -142,41 +146,41 @@ export class BullSpreadComponent implements OnInit{
 
 
   getCotizaciones(activoSubyacente: Cotizacion, month: string){    
-    const cache = localStorage.getItem('getCotizaciones');
-    if(cache){
-      return of(JSON.parse(cache));
-    }
+    /* const cacheOpciones = localStorage.getItem('getOpciones');
+    if(cacheOpciones){
+      return of(JSON.parse(cacheOpciones));
+    } */
     return this.iolService.buscarOpciones('BCBA', activoSubyacente.simbolo).pipe(
-      map(opciones => opciones.filter(opcion => this.aplicarFiltro(opcion.simbolo, month, activoSubyacente))),
+      map(opciones => opciones.filter(opcion => this.aplicarFiltro(opcion.simbolo, activoSubyacente, month))),
       switchMap(opciones => {
         const apiCalls = opciones.map(element => 
           this.iolService.obtenerCotizacion('BCBA', element.simbolo).pipe(
             map(opcion => ({
               ...opcion,
-              base: Number(element.simbolo.match(/(\d+)\./)[1])
+              base: Number(element.simbolo.match(/-?\d*\.?\d+/g))
            }))
           )
         )
         return combineLatest(apiCalls);
       }),
-      tap(data => {
-        localStorage.setItem('getCotizaciones', JSON.stringify(data));
+      tap(opciones => {
+        //localStorage.setItem('getOpciones', JSON.stringify(opciones));
       })
     );
   }
               
 
   clearCache() {
-    localStorage.removeItem('getCotizaciones');
+    //localStorage.removeItem('getOpciones');
   }
 
 
-  aplicarFiltro(base : string, selectedMonth: string, activoSubyacente: Cotizacion) : boolean {
-    let bolMes = !!~base.substr(-2).indexOf(selectedMonth);
+  aplicarFiltro(base : string, activoSubyacente: Cotizacion, month: string, ) : boolean {
+    let bolMes = !!~base.substr(-2).indexOf(month);
     let bolTipo =  base.substring(3,4) === 'C';
-    let baseN = Number(base.match(/(\d+)\./)[1]);
+    let baseN = Number(base.match(/-?\d*\.?\d+/g));
     let utlimoPrecio = activoSubyacente.ultimoPrecio;
-    let moneyOk = Math.abs(baseN - activoSubyacente.ultimoPrecio)/utlimoPrecio <= 0.15;
+    let moneyOk = Math.abs(baseN - activoSubyacente.ultimoPrecio)/utlimoPrecio <= 0.10;
     return bolMes && bolTipo && moneyOk;
   }
 
