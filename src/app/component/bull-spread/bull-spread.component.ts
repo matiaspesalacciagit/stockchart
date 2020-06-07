@@ -28,9 +28,25 @@ export class BullSpreadComponent implements OnInit{
     private iolService: RestService, 
     private fb: FormBuilder,
     public dateService: DateService) { }
+    
+  title: String = "Bull Spread";
+  subTitle: String = "Cotizaciones";
+  
+  cols:any[] = [
+      { field: 'diferenciaEntreBases', header: 'diferenciaEntreBases' },
+      { field: 'puntaje', header: 'puntaje' },
+      { field: 'gananciaPorPesoInvertido', header: 'gananciaPorPesoInvertido' },
+      { field: 'costoInicial', header: 'costoInicial' },
+      { field: 'ganancaMaxima', header: 'ganancaMaxima' },
+      { field: 'precioCompra', header: 'precioCompra' },
+      { field: 'precioVenta', header: 'precioVenta' },
+      { field: 'simboloCompra', header: 'simboloCompra' },
+      { field: 'simboloVenta', header: 'simboloVenta' },
+    ];
+
 
   form = this.fb.group({
-    subyacente: ['COME'],
+    subyacente: ['GGAL'],
     month: ['JU'],
     loteOperar: ['10']
   });
@@ -184,4 +200,5 @@ export class BullSpreadComponent implements OnInit{
     return bolMes && bolTipo && moneyOk;
   }
 
+  
 }

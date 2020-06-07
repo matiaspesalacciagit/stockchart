@@ -14,13 +14,16 @@ import { ChartService } from './service/chart.service';
 import { GuardService } from './service/guard.service';
 import { RestService } from './service/rest.service';
 import { BullSpreadComponent } from './component/bull-spread/bull-spread.component';
+import { ResultTableComponent } from './component/result-table/result-table.component';
+import { TableModule } from 'primeng/table';
 
 @NgModule({
   declarations: [
     AppComponent,
     PageLoginComponent,
     PageAssetQuoteComponent,
-    BullSpreadComponent
+    BullSpreadComponent,
+    ResultTableComponent,
   ],
   imports: [
     BrowserModule,
@@ -29,7 +32,8 @@ import { BullSpreadComponent } from './component/bull-spread/bull-spread.compone
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MaterialModule,
-    HttpClientModule
+    HttpClientModule,
+    TableModule
   ],
   providers: [GuardService, RestService, ChartService, DatePipe, {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}],
   bootstrap: [AppComponent]

@@ -24,8 +24,10 @@
 
   </form>
   </mat-card>
-<ng-container *ngIf="info$ | async as info">
-  <pre>
-    {{ info | json }}
-  </pre>
-</ng-container>
+
+  <ng-container *ngIf="info$ | async as info">
+    <pre>
+      <app-result-table [cotizaciones]="info" [cols]="cols" [title]="title" [subTitle]="subTitle"></app-result-table>
+      <!-- {{ info | json }} -->
+    </pre>
+  </ng-container>
