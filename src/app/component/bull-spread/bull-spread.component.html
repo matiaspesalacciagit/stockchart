@@ -1,33 +1,33 @@
-
-  <mat-card> 
-    <form [formGroup]="form">
-      <mat-form-field>
-        <mat-label>Subyacente</mat-label>
-        <input matInput formControlName="subyacente">
-      </mat-form-field>
-      <mat-form-field>
+<mat-card>
+  <form [formGroup]="form">
+    <mat-form-field>
+      <mat-label>Subyacente</mat-label>
+      <input matInput formControlName="subyacente" />
+    </mat-form-field>
+    <mat-form-field>
       <mat-label>Mes</mat-label>
-      <mat-select  formControlName="month" *ngIf="dateService.months$ | async as months"> 
-          <mat-option *ngFor="let month of months" [value]="month.value">
-            {{month.label}}
-          </mat-option>
-        </mat-select>
-        
+      <mat-select formControlName="month" *ngIf="dateService.months$ | async as months">
+        <mat-option *ngFor="let month of months" [value]="month.value">
+          {{ month.label }}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
     <mat-form-field>
       <mat-label>Lotes</mat-label>
-      <input matInput formControlName="loteOperar">
+      <input matInput formControlName="loteOperar" />
     </mat-form-field>
-   
+      <mat-slide-toggle class="example-margin" formControlName="autorefresh">
+        AutoReload
+      </mat-slide-toggle>
+
     <button mat-button (click)="search()">Analizar</button>
     <button mat-button (click)="clearCache()">Limpiar Chache</button>
-
   </form>
-  </mat-card>
+</mat-card>
 
-  <ng-container *ngIf="info$ | async as info">
-    <pre>
+<ng-container *ngIf="info$ | async as info">
+  <pre>
       <app-result-table [cotizaciones]="info" [cols]="cols" [title]="title" [subTitle]="subTitle"></app-result-table>
       <!-- {{ info | json }} -->
     </pre>
-  </ng-container>
+</ng-container>

@@ -17,16 +17,17 @@ export class PageLoginComponent implements OnInit {
   }
 
   login() {
-    if (JSON.parse(localStorage.getItem('cred'))){
-      this.username = JSON.parse(localStorage.getItem('cred'))['username'];
-      this.password = JSON.parse(localStorage.getItem('cred'))['password'];
-    };
-    
+    const credString = localStorage.getItem('cred');
+    if (credString){
+      const cred = JSON.parse(credString) as any;
+      this.username = cred.username;
+      this.password = cred.password;
+    }
     const response = this.service.logIn(this.username, this.password, 'password').subscribe(
       (data) => {
         this.service.token = data;
         this.service.setUserLogged();
-        this.router.navigate(['/quote']);
+        this.router.navigate(['/bull']);
       },
       (err: HttpErrorResponse) => {
         if (err.error instanceof Error) {
