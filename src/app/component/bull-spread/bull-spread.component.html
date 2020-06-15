@@ -27,7 +27,8 @@
 
 <ng-container *ngIf="info$ | async as info">
   <pre>
-      <app-result-table [cotizaciones]="info" [cols]="cols" [title]="title" [subTitle]="subTitle"></app-result-table>
+      <app-result-table [cotizaciones]="info" [cols]="colsBull" [sortField]="sortFieldBull" [title]="titleBull" [subTitle]="subTitleBull"></app-result-table>
+      <app-result-table [cotizaciones]="info" [cols]="colsBear" [sortField]="sortFieldBear" [title]="titleBear" [subTitle]="subTitleBear"></app-result-table>
       <!-- {{ info | json }} -->
     </pre>
 </ng-container>

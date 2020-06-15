@@ -26,17 +26,33 @@ export class BullSpreadComponent implements OnInit {
 
   constructor(private iolService: RestService, private fb: FormBuilder, public dateService: DateService) {}
 
-  title = 'Bull Spread';
-  subTitle = 'Cotizaciones';
+  titleBull = 'Bull Spread';
+  subTitleBull = 'Cotizaciones';
+  titleBear = 'Bear Spread';
+  subTitleBear = 'Cotizaciones';
+  sortFieldBull = 'puntaje';
+  sortFieldBear = 'puntajeBear';
 
-  cols: any[] = [
-    { field: 'diferenciaEntreBases', header: 'diferenciaEntreBases' },
-    { field: 'puntaje', header: 'puntaje' },
+  colsBull: any[] = [
+    { field: 'puntaje', header: 'Puntaje' },
+    { field: 'diferenciaEntreBases', header: 'Dif Bases' },
+    { field: 'costoInicial', header: 'Costo' },
+    { field: 'precioCompra', header: 'Precio Compra' },
+    { field: 'precioVenta', header: 'Precio Venta' },
+    { field: 'ganancaMaxima', header: 'Ganancia Máxima' },
     { field: 'gananciaPorPesoInvertido', header: 'gananciaPorPesoInvertido' },
-    { field: 'costoInicial', header: 'costoInicial' },
-    { field: 'ganancaMaxima', header: 'ganancaMaxima' },
-    { field: 'precioCompra', header: 'precioCompra' },
-    { field: 'precioVenta', header: 'precioVenta' },
+    { field: 'simboloCompra', header: 'simboloCompra' },
+    { field: 'simboloVenta', header: 'simboloVenta' }
+  ];
+
+  colsBear: any[] = [
+    { field: 'puntajeBear', header: 'Puntaje' },
+    { field: 'diferenciaEntreBases', header: 'Dif Bases' },
+    { field: 'costoInicialBear', header: 'Costo' },
+    { field: 'precioCompraBear', header: 'Precio Compra' },
+    { field: 'precioVentaBear', header: 'Precio Venta' },
+    { field: 'ganancaMaximaBear', header: 'Ganancia Máxima' },
+    { field: 'gananciaPorPesoInvertido', header: 'gananciaPorPesoInvertido' },
     { field: 'simboloCompra', header: 'simboloCompra' },
     { field: 'simboloVenta', header: 'simboloVenta' }
   ];
@@ -119,42 +135,56 @@ export class BullSpreadComponent implements OnInit {
 
   getBullData(cotizaciones: Cotizacion[]) {
     const pares: any[] = [];
+    const paresBear: any[] = [];
     for (let i = 0; i < cotizaciones.length - 1; i++) {
-      const callAComprar = cotizaciones[i];
+      const callBaseMenor = cotizaciones[i];
       for (let j = i + 1; j < cotizaciones.length; j++) {
-        const callALanzar = cotizaciones[j];
-        const precioCompra = this.getCompraReal(callAComprar.puntas, 1);
-        const precioVenta = this.getVentaReal(callALanzar.puntas, 1);
+        const callBaseMayor = cotizaciones[j];
+        const precioCompra = this.getCompraReal(callBaseMenor.puntas, 1);
+        const precioVenta = this.getVentaReal(callBaseMayor.puntas, 1);
+        const precioCompraBear = this.getCompraReal(callBaseMayor.puntas, 1);
+        const precioVentaBear = this.getVentaReal(callBaseMenor.puntas, 1);
 
-        if (!precioCompra || !precioVenta) {
+        if (!precioCompra || !precioVenta || !precioCompraBear || !precioVentaBear) {
           continue;
         }
 
-        const diferenciaEntreBases = callALanzar.base - callAComprar.base;
+        const diferenciaEntreBases = callBaseMayor.base - callBaseMenor.base;
         const costoInicial = precioCompra - precioVenta;
-        const puntoMuerto = callAComprar.base + costoInicial;
-        const gananciaMaxima = callALanzar.base - callAComprar.base - costoInicial;
+        const costoInicialBear = precioCompraBear - precioVentaBear;
+        const puntoMuerto = callBaseMenor.base + costoInicialBear;
+        const puntoMuertoBear = callBaseMenor.base + costoInicial;
+        const gananciaMaxima = callBaseMayor.base - callBaseMenor.base - costoInicial;
+        const gananciaMaximaBear = costoInicialBear * (-1);
 
         const par: any = {
           diferenciaEntreBases,
           puntaje: costoInicial / diferenciaEntreBases,
+          puntajeBear: 1 + (costoInicialBear / diferenciaEntreBases),
+          //puntajeBull: costoInicial / diferenciaEntreBases,
           gananciaPorPesoInvertido: diferenciaEntreBases / costoInicial - 1,
           costoInicial,
+          costoInicialBear,
           //puntoMuerto,
           ganancaMaxima: gananciaMaxima,
+          ganancaMaximaBear: gananciaMaximaBear,
           precioCompra,
           precioVenta,
+          precioCompraBear,
+          precioVentaBear,
           //callAComprarBase: callAComprar.base,
           //callALanzarBase: callALanzar.base,
-          simboloCompra: callAComprar.simbolo,
-          simboloVenta: callALanzar.simbolo
+          simboloCompra: callBaseMenor.simbolo,
+          simboloVenta: callBaseMayor.simbolo
         };
 
         // if(par.puntaje > 0.5) {
         pares.push(par);
+        paresBear.push(par);
         //}
       }
     }
+    //paresBear.sort((x, y) => x.puntajeBear - y.puntajeBear);
     return pares.sort((x, y) => x.puntaje - y.puntaje);
     // vender la que esta OTM
   }

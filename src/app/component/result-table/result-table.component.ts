@@ -13,6 +13,7 @@ export class ResultTableComponent implements OnInit {
   @Input() cols: any[];
   @Input() title: string;
   @Input() subTitle: string;
+  @Input() sortField: string;
 
   constructor() {}
 
@@ -22,7 +23,7 @@ export class ResultTableComponent implements OnInit {
   format(str) {
     const value = Number(str);
     if (value) {
-      return parseFloat(str).toFixed(2);
+      return parseFloat(str).toFixed(3);
     }
     return str;
   }
