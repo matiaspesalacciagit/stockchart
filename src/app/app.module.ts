@@ -16,6 +16,8 @@ import { RestService } from './service/rest.service';
 import { BullSpreadComponent } from './component/bull-spread/bull-spread.component';
 import { ResultTableComponent } from './component/result-table/result-table.component';
 import { TableModule } from 'primeng/table';
+import { TabViewModule } from 'primeng/tabview';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import { TableModule } from 'primeng/table';
     BrowserAnimationsModule,
     MaterialModule,
     HttpClientModule,
-    TableModule
+    TableModule,
+    TabViewModule,
+    OverlayPanelModule
   ],
   providers: [GuardService, RestService, ChartService, DatePipe, {provide: MAT_DATE_LOCALE, useValue: 'en-GB'}],
   bootstrap: [AppComponent]

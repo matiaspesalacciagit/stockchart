@@ -1,31 +1,27 @@
-<!-- <p> Say {{ cotizaciones }}</p>
-<ul>
-    <li *ngFor="let cotizacion of cotizaciones">
-        {{cotizacion.diferenciaEntreBases}}
-        {{cotizacion.puntaje}}
-        {{cotizacion.simboloCompra}}
-        {{cotizacion.simboloVenta}}
-    </li>
-  </ul> -->
-
-  <h3>{{ title }}</h3>
-  <h4>{{ subTitle }}</h4>
-  <div id="table-container">
-      <p-table class="p-col-1" sortField="sortField" [columns]="cols" [value]="cotizaciones" (sortFunction)="customSort($event)" [customSort]="true">
-        <ng-template pTemplate="header" let-columns>
-            <tr>
-                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
-                    {{col.header}}
-                    <p-sortIcon [field]="col.field"></p-sortIcon>
-                </th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData let-columns="columns">
-            <tr>
-                <td *ngFor="let col of columns">
-                    {{ format(rowData[col.field]) }}
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
-  </div>
+<h3>{{ title }}</h3>
+<h4>{{ subTitle }}</h4>
+<div id="table-container">
+<p-table class="p-col-1" sortField="sortField" [columns]="cols" [value]="cotizaciones" (sortFunction)="customSort($event)" [customSort]="true">
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                {{col.header}}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+            </th>
+            <th>
+                Operaciones
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr>
+            <td *ngFor="let col of columns">
+                {{ format(rowData[col.field]) }}
+            </td>
+            <td>
+                <a href="">mensaje whastapp</a>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+</div>

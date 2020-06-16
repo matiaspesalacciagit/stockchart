@@ -40,9 +40,9 @@ export class BullSpreadComponent implements OnInit {
     { field: 'precioCompra', header: 'Precio Compra' },
     { field: 'precioVenta', header: 'Precio Venta' },
     { field: 'ganancaMaxima', header: 'Ganancia Máxima' },
-    { field: 'gananciaPorPesoInvertido', header: 'gananciaPorPesoInvertido' },
-    { field: 'simboloCompra', header: 'simboloCompra' },
-    { field: 'simboloVenta', header: 'simboloVenta' }
+    { field: 'gananciaPorPesoInvertido', header: 'Ganancia x $' },
+    { field: 'simboloCompra', header: 'Simb Compra' },
+    { field: 'simboloVenta', header: 'Simb Vta' }
   ];
 
   colsBear: any[] = [
@@ -52,9 +52,9 @@ export class BullSpreadComponent implements OnInit {
     { field: 'precioCompraBear', header: 'Precio Compra' },
     { field: 'precioVentaBear', header: 'Precio Venta' },
     { field: 'ganancaMaximaBear', header: 'Ganancia Máxima' },
-    { field: 'gananciaPorPesoInvertido', header: 'gananciaPorPesoInvertido' },
-    { field: 'simboloCompra', header: 'simboloCompra' },
-    { field: 'simboloVenta', header: 'simboloVenta' }
+    { field: 'gananciaPorPesoInvertido', header: 'Ganancia x $' },
+    { field: 'simboloCompra', header: 'Simb Vta' },
+    { field: 'simboloVenta', header: 'Simb Compra' }
   ];
 
   form = this.fb.group({
