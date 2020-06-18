@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { combineLatest, EMPTY, interval, Observable, Subject, merge } from 'rxjs';
-import { map, startWith, switchMap, tap, withLatestFrom, catchError, retry } from 'rxjs/operators';
+import { combineLatest, EMPTY, interval, Observable, Subject, merge, BehaviorSubject } from 'rxjs';
+import { map, startWith, switchMap, tap, withLatestFrom, catchError, retry, publishReplay, refCount } from 'rxjs/operators';
 import { Cotizacion, Puntas } from 'src/app/model/model';
 import { DateService } from '../../service/date.service';
 import { RestService } from '../../service/rest.service';
+import { WhatsAppService } from 'src/app/service/whats-app.service';
 
 export interface Par {
   callAComprar: Cotizacion;
@@ -24,7 +25,7 @@ export class BullSpreadComponent implements OnInit {
 
   // BCBA GGAL
 
-  constructor(private iolService: RestService, private fb: FormBuilder, public dateService: DateService) {}
+  constructor(private iolService: RestService, private fb: FormBuilder, public dateService: DateService, private whatsapp: WhatsAppService) {}
 
   titleBull = 'Bull Spread';
   subTitleBull = 'Cotizaciones';
@@ -67,6 +68,8 @@ export class BullSpreadComponent implements OnInit {
   searchSubject = new Subject<void>();
   search$ = this.searchSubject.asObservable();
 
+  
+
   selectedMonth$: Observable<string> = this.form.get('month').valueChanges.pipe(startWith(this.form.get('month').value));
   changeLotes$: Observable<string> = this.form.get('loteOperar').valueChanges.pipe(startWith(this.form.get('loteOperar').value));
 
@@ -90,13 +93,36 @@ export class BullSpreadComponent implements OnInit {
     )
   );
 */
-  info$ = merge(this.search$, this.autorefesh$).pipe(
+
+// NO VA;
+  currentSubyacenteSubject = new BehaviorSubject<string>(null); 
+  currentSubyacente$ =  this.currentSubyacenteSubject.asObservable();
+
+  // currentSubyacenteValue$ = this.currentSubyacente$.pipe(
+  //   distinctUntilChanged(),
+  //   switchMap(subyacente =>
+  //     this.iolService.obtenerCotizacion('BCBA', subyacente)
+  //   )
+  // );
+
+
+
+  subyacente$ = merge(this.search$, this.autorefesh$).pipe(
     switchMap(() =>
       this.iolService.obtenerCotizacion('BCBA', this.form.get('subyacente').value)
     ),
+    publishReplay(1),
+    refCount()
+  );
+
+ 
+
+ info$ = this.subyacente$.pipe(
     withLatestFrom(this.selectedMonth$, this.changeLotes$),
     switchMap(([activoSubyacente, month]) => this.getCotizaciones(activoSubyacente, month)),
     map(cotizaciones => this.getBullData(cotizaciones)),
+    publishReplay(1),
+    refCount()
   );
 
   opcionesFiltradas: Cotizacion[] = [];
@@ -190,10 +216,15 @@ export class BullSpreadComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.searchSubject.next();
+    // this.searchSubject.next();
+  
   }
 
   search() {
+    this.currentSubyacenteSubject.next(
+      this.form.get('subyacente').value
+    );
+
     this.searchSubject.next();
   }
 
@@ -203,7 +234,7 @@ export class BullSpreadComponent implements OnInit {
       return of(JSON.parse(cacheOpciones));
     } */
     return this.iolService.buscarOpciones('BCBA', activoSubyacente.simbolo).pipe(
-      map(opciones => opciones.filter(opcion => this.aplicarFiltro(opcion.simbolo, activoSubyacente, month))),
+      map(opciones => opciones.filter(opcion => this.applyFilters(opcion.simbolo, activoSubyacente, month))),
       switchMap(opciones => {
         const apiCalls = opciones.map(element =>
           this.iolService.obtenerCotizacion('BCBA', element.simbolo).pipe(
@@ -225,12 +256,20 @@ export class BullSpreadComponent implements OnInit {
     //localStorage.removeItem('getOpciones');
   }
 
-  aplicarFiltro(base: string, activoSubyacente: Cotizacion, month: string): boolean {
-    const bolMes =  base.substr(-2).indexOf(month) !== -1;
-    const bolTipo = base.substring(3, 4) === 'C';
-    const baseN = Number(base.match(/-?\d*\.?\d+/g));
-    const utlimoPrecio = activoSubyacente.ultimoPrecio;
-    const moneyOk = Math.abs(baseN - activoSubyacente.ultimoPrecio) / utlimoPrecio <= 0.1;
-    return bolMes && bolTipo && moneyOk;
+  onWhatsapp(cotizacion: Cotizacion) {
+    this.whatsapp.send("5491140290481", "Hola stocks");
+  }
+
+  onOperate(cotizacion: Cotizacion) {
+
+  }
+
+  applyFilters(symbol: string, activoSubyacente: Cotizacion, month: string): boolean {
+    const belongsToSelectedMonth =  symbol.substr(-2).indexOf(month) !== -1;
+    const isCall = symbol.substring(3, 4) === 'C';
+    const base = Number(symbol.match(/-?\d*\.?\d+/g));
+    const lastPrice = activoSubyacente.ultimoPrecio;
+    const moneyOk = Math.abs(base - lastPrice) / lastPrice <= 0.1;
+    return belongsToSelectedMonth && isCall && moneyOk;
   }
 }

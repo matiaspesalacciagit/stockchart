@@ -18,6 +18,9 @@ import { ResultTableComponent } from './component/result-table/result-table.comp
 import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { SellAssetComponent } from './component/sell-asset/sell-asset.component';
+import { BuyAssetComponent } from './component/buy-asset/buy-asset.component';
+import { FormOperationPairAssetComponent } from './component/form-operation-pair-asset/form-operation-pair-asset.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +29,9 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
     PageAssetQuoteComponent,
     BullSpreadComponent,
     ResultTableComponent,
+    SellAssetComponent,
+    BuyAssetComponent,
+    FormOperationPairAssetComponent,
   ],
   imports: [
     BrowserModule,

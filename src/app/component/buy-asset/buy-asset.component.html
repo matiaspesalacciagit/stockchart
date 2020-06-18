@@ -1,0 +1,53 @@
+<p>buy-asset works!</p>
+
+
+<mat-card>
+    <div>
+      <mat-form-field style="margin-right: 5px;">
+        <input matInput placeholder="Simbolo" [formControl]="activoOperar" (change)="buscarCotizacionActivoAOperar()">
+      </mat-form-field> 
+
+      <label style='margin-right: 50px'>Último Operado: <b>{{activoOperarCotizacion.ultimoPrecio | currency}}</b></label> 
+      <label style='margin-right: 50px'>Variación diaria: <b>{{activoOperarCotizacion.variacion}}  %</b></label>
+    
+      <table mat-table [dataSource]="activoOperarCotizacion.puntas" class="mat-elevation-z1" style="width:50%;">  
+        <ng-container matColumnDef="Cant Compra">
+          <th mat-header-cell *matHeaderCellDef>Cant Compra</th>
+          <td mat-cell *matCellDef="let element"> {{element.cantidadCompra}} </td>
+        </ng-container>
+        <ng-container matColumnDef="Precio Compra">
+          <th mat-header-cell *matHeaderCellDef>Precio Compra</th>
+          <td mat-cell *matCellDef="let element"> <b> {{element.precioCompra}} </b> </td>
+        </ng-container>
+        <ng-container matColumnDef="Precio Venta">
+          <th mat-header-cell *matHeaderCellDef>Precio Venta</th>
+          <td mat-cell *matCellDef="let element"> <b> {{element.precioVenta}} </b> </td>
+        </ng-container>
+        <ng-container matColumnDef="Cant Venta">
+          <th mat-header-cell *matHeaderCellDef>Cant Venta</th>
+          <td mat-cell *matCellDef="let element"> {{element.cantidadVenta}} </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsPuntas"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsPuntas;"></tr>
+      </table> 
+    </div>
+
+
+    <div style='margin-top: 25px;'>
+      <button mat-button style="width: 100px; background: #689f38; color: white; margin-right: 15px;" (click)="comprar()">Comprar</button>
+      <button mat-button style="width: 100px; background: #689f38; color: white; margin-right: 15px;" (click)="vender()">Vender</button>
+    </div>
+
+    <div style="margin-top: 25px;"> 
+      <mat-form-field style="margin-right: 5px;">
+        <input matInput placeholder="Cantidad" [formControl]="cantidadOperar" (change)="calcularMonto()" >
+      </mat-form-field>
+      <mat-form-field style="margin-right: 5px;">
+        <input matInput placeholder="Precio" [formControl]="precioOperar" (change)="calcularMonto()">
+      </mat-form-field>
+        {{montoOperar  | currency}}
+    </div>
+    <li style='list-style:none;' *ngFor="let item of messagesOperatoria">
+        {{ item.message }}
+    </li>
+  </mat-card>

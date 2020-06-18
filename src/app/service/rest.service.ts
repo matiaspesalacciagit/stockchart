@@ -137,8 +137,8 @@ export class RestService {
     return null;
   }
 
-  comprar(mercado: string, simbolo: string, cantidad: string, precio: string, validez: string) {
-    const orden = { mercado, simbolo, cantidad, precio, plazo: 't0', validez };
+  comprar(mercado: string, simbolo: string, cantidad: string, precio: string, validez: string, plazo: string) {
+    const orden = { mercado, simbolo, cantidad, precio, plazo, validez };
     if (this.token && this.token.access_token) {
       const autToken = 'Bearer ' + this.token.access_token;
       const url = this.endpoint + '/api/v2/operar/Comprar';
@@ -147,8 +147,8 @@ export class RestService {
     return null;
   }
 
-  vender(mercado: string, simbolo: string, cantidad: string, precio: string, validez: string) {
-    const orden = { mercado, simbolo, cantidad, precio, plazo: 't0', validez };
+  vender(mercado: string, simbolo: string, cantidad: string, precio: string, validez: string, plazo: string) {
+    const orden = { mercado, simbolo, cantidad, precio, plazo, validez };
     if (this.token && this.token.access_token) {
       const autToken = 'Bearer ' + this.token.access_token;
       const url = this.endpoint + '/api/v2/operar/Vender';

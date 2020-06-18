@@ -4,12 +4,14 @@ import { PageLoginComponent } from './component/page-login/page-login.component'
 import { PageAssetQuoteComponent } from './component/page-asset-quote/page-asset-quote.component';
 import { GuardService } from './service/guard.service';
 import { BullSpreadComponent } from './component/bull-spread/bull-spread.component';
+import { FormOperationPairAssetComponent } from './component/form-operation-pair-asset/form-operation-pair-asset.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: PageLoginComponent},
   { path: 'quote', component: PageAssetQuoteComponent, canActivate: [GuardService] },
   { path: 'bull', component: BullSpreadComponent, canActivate: [GuardService] },
+  { path: 'operationPair', component: FormOperationPairAssetComponent, canActivate: [GuardService] },
   
   { path: '**', redirectTo: '/login'}
 ];

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { SortEvent } from 'primeng/api';
 import { Cotizacion } from 'src/app/model/model';
 
@@ -15,11 +15,14 @@ export class ResultTableComponent implements OnInit {
   @Input() subTitle: string;
   @Input() sortField: string;
 
+  @Output() whatsapp: EventEmitter<Cotizacion> = new EventEmitter<Cotizacion>();
+  @Output() operate: EventEmitter<Cotizacion> = new EventEmitter<Cotizacion>();
+
   constructor() {}
 
   ngOnInit(): void {}
 
-  //Formatting if the string is a Number
+  //Formatting if the string is ao Number
   format(str) {
     const value = Number(str);
     if (value) {
@@ -47,5 +50,13 @@ export class ResultTableComponent implements OnInit {
       }
       return event.order * result;
     });
+  }
+
+  onWhatsApp(cotizacion: Cotizacion) {
+    this.whatsapp.emit(cotizacion);
+  }
+
+  onOperate(cotizacion: Cotizacion) {
+    this.operate.emit(cotizacion);
   }
 }

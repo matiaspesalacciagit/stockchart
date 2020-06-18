@@ -24,14 +24,34 @@
     <button mat-button (click)="clearCache()">Limpiar Chache</button>
   </form>
 </mat-card>
+<ng-container *ngIf="subyacente$ | async as subyacente">
+  <h3>{{ subyacente.ultimoPrecio }}</h3>
+</ng-container>
 
 <ng-container *ngIf="info$ | async as info">
-  <pre>
     <h3 class="first">Estrategias</h3>
     <p-tabView>
-      <p-tabPanel header="Bull Spread" leftIcon="pi pi-calendar"><app-result-table [cotizaciones]="info" [cols]="colsBull" [sortField]="sortFieldBull" [title]="titleBull" [subTitle]="subTitleBull"></app-result-table></p-tabPanel>
-      <p-tabPanel header="Bear Spread" leftIcon="pi pi-inbox"><app-result-table [cotizaciones]="info" [cols]="colsBear" [sortField]="sortFieldBear" [title]="titleBear" [subTitle]="subTitleBear"></app-result-table></p-tabPanel>
+      <p-tabPanel header="Bull Spread">
+        <app-result-table [cotizaciones]="info" 
+          [cols]="colsBull" 
+          [sortField]="sortFieldBull" 
+          [title]="titleBull" 
+          [subTitle]="subTitleBull"
+          (operate)="onOperate($event)"
+          (whatsapp)="onWhatsapp($event)"
+          >
+        </app-result-table>
+      </p-tabPanel>
+      <p-tabPanel header="Bear Spread">
+        <app-result-table 
+          [cotizaciones]="info" 
+          [cols]="colsBear" 
+          [sortField]="sortFieldBear" 
+          [title]="titleBear" 
+          [subTitle]="subTitleBear">
+        </app-result-table>
+      </p-tabPanel>
     </p-tabView>
-      <!-- {{ info | json }} -->
-    </pre>
 </ng-container>
+
+<app-buy-asset></app-buy-asset>
