@@ -21,6 +21,7 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { SellAssetComponent } from './component/sell-asset/sell-asset.component';
 import { BuyAssetComponent } from './component/buy-asset/buy-asset.component';
 import { FormOperationPairAssetComponent } from './component/form-operation-pair-asset/form-operation-pair-asset.component';
+import { OperateAssetComponent } from './component/operate-asset/operate-asset.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { FormOperationPairAssetComponent } from './component/form-operation-pair
     SellAssetComponent,
     BuyAssetComponent,
     FormOperationPairAssetComponent,
+    OperateAssetComponent,
   ],
   imports: [
     BrowserModule,

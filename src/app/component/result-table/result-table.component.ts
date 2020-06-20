@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { SortEvent } from 'primeng/api';
 import { Cotizacion } from 'src/app/model/model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-result-table',
@@ -18,7 +19,7 @@ export class ResultTableComponent implements OnInit {
   @Output() whatsapp: EventEmitter<Cotizacion> = new EventEmitter<Cotizacion>();
   @Output() operate: EventEmitter<Cotizacion> = new EventEmitter<Cotizacion>();
 
-  constructor() {}
+  constructor(private router: Router ) {}
 
   ngOnInit(): void {}
 
@@ -58,5 +59,6 @@ export class ResultTableComponent implements OnInit {
 
   onOperate(cotizacion: Cotizacion) {
     this.operate.emit(cotizacion);
+    this.router.navigate(['/operation', { }]);
   }
 }

@@ -16,9 +16,9 @@
       <mat-label>Lotes</mat-label>
       <input matInput formControlName="loteOperar" />
     </mat-form-field>
-      <mat-slide-toggle class="example-margin" formControlName="autorefresh">
-        AutoReload
-      </mat-slide-toggle>
+    <mat-slide-toggle class="example-margin" formControlName="autorefresh">
+      AutoReload
+    </mat-slide-toggle>
 
     <button mat-button (click)="search()">Analizar</button>
     <button mat-button (click)="clearCache()">Limpiar Chache</button>
@@ -26,32 +26,28 @@
 </mat-card>
 <ng-container *ngIf="subyacente$ | async as subyacente">
   <h3>{{ subyacente.ultimoPrecio }}</h3>
-</ng-container>
 
-<ng-container *ngIf="info$ | async as info">
+  <ng-container *ngIf="info$ | async as info">
     <h3 class="first">Estrategias</h3>
     <p-tabView>
       <p-tabPanel header="Bull Spread">
-        <app-result-table [cotizaciones]="info" 
-          [cols]="colsBull" 
-          [sortField]="sortFieldBull" 
-          [title]="titleBull" 
+        <app-result-table
+          [cotizaciones]="info"
+          [cols]="colsBull"
+          [sortField]="sortFieldBull"
+          [title]="titleBull"
           [subTitle]="subTitleBull"
-          (operate)="onOperate($event)"
+          (operate)="onOperate($event, subyacente)"
           (whatsapp)="onWhatsapp($event)"
-          >
+        >
         </app-result-table>
       </p-tabPanel>
       <p-tabPanel header="Bear Spread">
-        <app-result-table 
-          [cotizaciones]="info" 
-          [cols]="colsBear" 
-          [sortField]="sortFieldBear" 
-          [title]="titleBear" 
-          [subTitle]="subTitleBear">
+        <app-result-table [cotizaciones]="info" [cols]="colsBear" [sortField]="sortFieldBear" [title]="titleBear" [subTitle]="subTitleBear">
         </app-result-table>
       </p-tabPanel>
     </p-tabView>
+  </ng-container>
 </ng-container>
-
-<app-buy-asset></app-buy-asset>
+<app-form-operation-pair-asset></app-form-operation-pair-asset>
+<!-- <app-buy-asset></app-buy-asset> -->

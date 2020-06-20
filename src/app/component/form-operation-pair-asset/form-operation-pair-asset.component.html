@@ -1,1 +1,21 @@
-<p>form-operation-pair-asset works!</p>
+<table>
+  <thead>
+    <tr>
+        <td>Simbolo</td>
+        <td>Operation</td>
+        <td>Quantity</td>
+        <td>Price</td>
+        <td>Estado Actual</td>
+        <td></td>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngIf="(bases$|async) as bases">
+      <ng-container app-operate-asset (updateBase)="onUpdateBase($event)" *ngFor="let base of bases">
+      </ng-container>
+    </ng-container>
+  </tbody>
+</table>
+
+<button (click)="onOperate()">Ejecutar</button>
+<button (click)="onStop()">Stop!</button>

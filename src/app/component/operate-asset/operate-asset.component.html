@@ -1,0 +1,35 @@
+<tr>
+  <td>{{ base.cotizacion.simbolo }}</td>
+  <td>{{ base.operation }}</td>
+  <td>{{ base.quantity }}</td>
+  <td>{{ base.price }}</td>
+  <td>{{ base.estadoActual }}</td>
+  <td><button (click)="editing = true">edit</button></td>
+</tr>
+<tr *ngIf="editing">
+  <td colspan="6">
+    <form [formGroup]="form">
+      <div>
+        <label>Cantidad</label>
+        <input formControlName="quantity" type="number" />
+      </div>
+      <div>
+        <label>Precio</label>
+        <input formControlName="price" type="number" />
+      </div>
+      <div>
+        <label>Usar Valor de Mercado</label>
+        <input formControlName="useMarketValue" />
+      </div>
+      <button click)="editing=false">Cancel</button> <button (click)="onSave()">OK</button>
+    </form>
+  </td>
+</tr>
+
+<!-- operation: 'buy' | 'sell';
+cotizacion: Cotizacion;
+amount: number;
+price: string;
+numeroOperacion?: number;
+estadoActual?: string;
+} -->

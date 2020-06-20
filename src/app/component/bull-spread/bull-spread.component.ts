@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { combineLatest, EMPTY, interval, Observable, Subject, merge, BehaviorSubject } from 'rxjs';
-import { map, startWith, switchMap, tap, withLatestFrom, catchError, retry, publishReplay, refCount } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, EMPTY, interval, merge, Observable, Subject } from 'rxjs';
+import { map, publishReplay, refCount, startWith, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { Cotizacion, Puntas } from 'src/app/model/model';
+import { OperateService } from 'src/app/service/operate.service';
+import { WhatsAppService } from 'src/app/service/whats-app.service';
 import { DateService } from '../../service/date.service';
 import { RestService } from '../../service/rest.service';
-import { WhatsAppService } from 'src/app/service/whats-app.service';
 
 export interface Par {
   callAComprar: Cotizacion;
@@ -20,12 +21,18 @@ export interface Par {
   templateUrl: './bull-spread.component.html',
   styleUrls: ['./bull-spread.component.scss']
 })
-export class BullSpreadComponent implements OnInit {
+export class BullSpreadComponent {
   //  @Input('activoSubyacente') @AsObservable() activoSubyacente$: Observable<Cotizacion>;
 
   // BCBA GGAL
 
-  constructor(private iolService: RestService, private fb: FormBuilder, public dateService: DateService, private whatsapp: WhatsAppService) {}
+  constructor(
+    private iolService: RestService,
+    private fb: FormBuilder,
+    public dateService: DateService,
+    private whatsapp: WhatsAppService,
+    private operateService: OperateService
+    ) {}
 
   titleBull = 'Bull Spread';
   subTitleBull = 'Cotizaciones';
@@ -33,7 +40,7 @@ export class BullSpreadComponent implements OnInit {
   subTitleBear = 'Cotizaciones';
   sortFieldBull = 'puntaje';
   sortFieldBear = 'puntajeBear';
-
+  
   colsBull: any[] = [
     { field: 'puntaje', header: 'Puntaje' },
     { field: 'diferenciaEntreBases', header: 'Dif Bases' },
@@ -68,7 +75,6 @@ export class BullSpreadComponent implements OnInit {
   searchSubject = new Subject<void>();
   search$ = this.searchSubject.asObservable();
 
-  
 
   selectedMonth$: Observable<string> = this.form.get('month').valueChanges.pipe(startWith(this.form.get('month').value));
   changeLotes$: Observable<string> = this.form.get('loteOperar').valueChanges.pipe(startWith(this.form.get('loteOperar').value));
@@ -114,8 +120,7 @@ export class BullSpreadComponent implements OnInit {
     publishReplay(1),
     refCount()
   );
-
- 
+  
 
  info$ = this.subyacente$.pipe(
     withLatestFrom(this.selectedMonth$, this.changeLotes$),
@@ -184,11 +189,13 @@ export class BullSpreadComponent implements OnInit {
         const gananciaMaximaBear = costoInicialBear * (-1);
 
         const par: any = {
+          callBaseMayor,
+          callBaseMenor,
           diferenciaEntreBases,
-          puntaje: costoInicial / diferenciaEntreBases,
+          puntaje: diferenciaEntreBases !== 0 ? costoInicial / diferenciaEntreBases : 0,
           puntajeBear: 1 + (costoInicialBear / diferenciaEntreBases),
           //puntajeBull: costoInicial / diferenciaEntreBases,
-          gananciaPorPesoInvertido: diferenciaEntreBases / costoInicial - 1,
+          gananciaPorPesoInvertido: (costoInicial - 1) !== 0 ? diferenciaEntreBases / costoInicial - 1 : 0,
           costoInicial,
           costoInicialBear,
           //puntoMuerto,
@@ -215,10 +222,6 @@ export class BullSpreadComponent implements OnInit {
     // vender la que esta OTM
   }
 
-  ngOnInit(): void {
-    // this.searchSubject.next();
-  
-  }
 
   search() {
     this.currentSubyacenteSubject.next(
@@ -256,13 +259,34 @@ export class BullSpreadComponent implements OnInit {
     //localStorage.removeItem('getOpciones');
   }
 
-  onWhatsapp(cotizacion: Cotizacion) {
+  onWhatsapp(cotizacion: any) {
     this.whatsapp.send("5491140290481", "Hola stocks");
   }
 
-  onOperate(cotizacion: Cotizacion) {
+  onOperate(bullData: any, subyacente: Cotizacion) {
+    const callVenta: Cotizacion =  bullData.callBaseMayor;
+    const callCompra: Cotizacion =  bullData.callBaseMenor;
 
+    this.operateService.setOperation({
+      bases: [{
+        cotizacion: callCompra,
+        operation: 'buy',
+        quantity: 0,
+        price: bullData.precioCompra,
+        estadoActual: 'nueva',
+        useMarketValue: true
+      }, {
+        cotizacion: callVenta,
+        operation: 'sell',
+        quantity: 0,
+        price: bullData.precioVenta,
+        estadoActual: 'nueva',
+        useMarketValue: true
+      }],
+      subyacente
+    });
   }
+
 
   applyFilters(symbol: string, activoSubyacente: Cotizacion, month: string): boolean {
     const belongsToSelectedMonth =  symbol.substr(-2).indexOf(month) !== -1;

@@ -11,7 +11,7 @@ const routes: Routes = [
   { path: 'login', component: PageLoginComponent},
   { path: 'quote', component: PageAssetQuoteComponent, canActivate: [GuardService] },
   { path: 'bull', component: BullSpreadComponent, canActivate: [GuardService] },
-  { path: 'operationPair', component: FormOperationPairAssetComponent, canActivate: [GuardService] },
+  { path: 'operation', component: FormOperationPairAssetComponent, canActivate: [GuardService] },
   
   { path: '**', redirectTo: '/login'}
 ];
