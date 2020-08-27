@@ -119,7 +119,8 @@ export class OperateService {
           startWith(bases),
           switchMap(() => {
             const apiCalls = bases.map(element =>
-              this.iolService.obtenerCotizacion('BCBA', element.cotizacion.simbolo).pipe(map(cotizacion => ({ ...element, cotizacion })))
+              this.iolService.obtenerCotizacion('BCBA', element.cotizacion.simbolo)
+                .pipe(map(cotizacion => ({ ...element, cotizacion })))
             );
             return combineLatest(apiCalls);
           })

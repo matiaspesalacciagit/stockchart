@@ -10,7 +10,7 @@
     </tr>
   </thead>
   <tbody>
-    <ng-container *ngIf="(bases$|async) as bases">
+    <ng-container *ngIf="(bases$ | async) as bases">
       <ng-container app-operate-asset (updateBase)="onUpdateBase($event)" *ngFor="let base of bases">
       </ng-container>
     </ng-container>

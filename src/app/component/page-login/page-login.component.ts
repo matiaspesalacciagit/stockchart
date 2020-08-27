@@ -9,7 +9,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./page-login.component.css']
 })
 export class PageLoginComponent implements OnInit {
-  username: string = 'pablojunin';
+  username: string;
   password: string;
 
   constructor(private router: Router, private service: RestService) {  }

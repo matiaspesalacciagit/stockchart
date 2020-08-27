@@ -22,6 +22,7 @@ import { SellAssetComponent } from './component/sell-asset/sell-asset.component'
 import { BuyAssetComponent } from './component/buy-asset/buy-asset.component';
 import { FormOperationPairAssetComponent } from './component/form-operation-pair-asset/form-operation-pair-asset.component';
 import { OperateAssetComponent } from './component/operate-asset/operate-asset.component';
+import { DetailAssetComponent } from './component/detail-asset/detail-asset.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { OperateAssetComponent } from './component/operate-asset/operate-asset.c
     BuyAssetComponent,
     FormOperationPairAssetComponent,
     OperateAssetComponent,
+    DetailAssetComponent,
   ],
   imports: [
     BrowserModule,

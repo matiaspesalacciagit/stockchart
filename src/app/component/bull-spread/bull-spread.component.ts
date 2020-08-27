@@ -67,7 +67,7 @@ export class BullSpreadComponent {
 
   form = this.fb.group({
     subyacente: ['GGAL'],
-    month: ['JU'],
+    month: ['OC'],
     loteOperar: ['10'],
     autorefresh: [false]
   });

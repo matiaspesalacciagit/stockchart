@@ -25,7 +25,7 @@
   </form>
 </mat-card>
 <ng-container *ngIf="subyacente$ | async as subyacente">
-  <h3>{{ subyacente.ultimoPrecio }}</h3>
+  <app-detail-asset [subyacente]="subyacente"></app-detail-asset>
 
   <ng-container *ngIf="info$ | async as info">
     <h3 class="first">Estrategias</h3>
