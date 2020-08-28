@@ -11,7 +11,7 @@
   </thead>
   <tbody>
     <ng-container *ngIf="(bases$ | async) as bases">
-      <ng-container app-operate-asset (updateBase)="onUpdateBase($event)" *ngFor="let base of bases">
+      <ng-container app-operate-asset (updateBase)="onUpdateBase($event)" *ngFor="let base of bases" [base]="base">
       </ng-container>
     </ng-container>
   </tbody>
