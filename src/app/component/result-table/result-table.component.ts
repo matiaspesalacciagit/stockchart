@@ -10,14 +10,14 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ResultTableComponent implements OnInit {
-  @Input() cotizaciones: Cotizacion[];
+  @Input() pares: Par[];
   @Input() cols: any[];
   @Input() title: string;
   @Input() subTitle: string;
   @Input() sortField: string;
 
-  @Output() whatsapp: EventEmitter<Cotizacion> = new EventEmitter<Cotizacion>();
-  @Output() operate: EventEmitter<Cotizacion> = new EventEmitter<Cotizacion>();
+  @Output() whatsapp: EventEmitter<Par> = new EventEmitter<Par>();
+  @Output() operate: EventEmitter<Par> = new EventEmitter<Par>();
 
   constructor(private router: Router ) {}
 
@@ -59,6 +59,6 @@ export class ResultTableComponent implements OnInit {
 
   onOperate(cotizacion: Cotizacion) {
     this.operate.emit(cotizacion);
-    this.router.navigate(['/operation', { }]);
+    //this.router.navigate(['/operation', { }]);
   }
 }

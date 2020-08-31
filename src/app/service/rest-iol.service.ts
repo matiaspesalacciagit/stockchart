@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { TokenIOL, TituloLess, Cotizacion, Opcion } from '../model/model';
 import { map, switchMap, catchError } from 'rxjs/operators';
+import { RestService } from './rest.service';
 
 export interface ComprarResponse {
   ok?: boolean;
@@ -39,12 +40,24 @@ export interface OperacionesReponse {
 })
 export class RestIolService {
   // https://api.invertironline.com
-  endpoint = '';
-  token: TokenIOL;
-  serieHistorica: any[];
-  tituloLess: TituloLess;
+  // endpoint = '';
+  // token: TokenIOL;
+  // serieHistorica: any[];
+  // tituloLess: TituloLess;
 
-  constructor(private http: HttpClient) {}
+  get endpoint(){ return this.restService.endpoint };
+  set endpoint(value) { this.restService.endpoint = value}; 
+
+  get token(){ return this.restService.token };
+  set token(value) { this.restService.token = value};   
+
+  get serieHistorica(){ return this.restService.serieHistorica };
+  set serieHistorica(value) { this.restService.serieHistorica = value}; 
+
+  get tituloLes(){ return this.restService.tituloLess };
+  set tituloLess(value) { this.restService.tituloLess = value}; 
+
+  constructor(private http: HttpClient, private restService: RestService) {}
 
   logIn(username: string, password: string, granType: string): Observable<any> {
     const url = this.endpoint + '/token';

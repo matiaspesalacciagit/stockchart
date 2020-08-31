@@ -9,12 +9,32 @@ import { DateService } from '../../service/date.service';
 import { RestService } from '../../service/rest.service';
 
 export interface Par {
-  callAComprar: Cotizacion;
-  callALanzar: Cotizacion;
-  diferencia: number;
-  distancia: number;
-  sirve: boolean;
+  callBaseMayor: Cotizacion;
+  callBaseMenor: Cotizacion;
+  diferenciaEntreBases: number;
+  puntaje: number; 
+  puntajeBear: number; 
+  gananciaPorPesoInvertido: number;
+  costoInicial: number;
+  costoInicialBear: number;
+  ganancaMaxima: number,
+  ganancaMaximaBear: number,
+  precioCompra: number,
+  precioVenta:number,
+  precioCompraBear: number,
+  precioVentaBear: number,
+  simboloCompra: string,
+  simboloVenta: string
 }
+
+
+// export interface Par {
+//   callAComprar: Cotizacion;
+//   callALanzar: Cotizacion;
+//   diferencia: number;
+//   distancia: number;
+//   sirve: boolean;
+// }
 
 @Component({
   selector: 'app-bull-spread',
@@ -164,7 +184,7 @@ export class BullSpreadComponent {
     return null;
   }
 
-  getBullData(cotizaciones: Cotizacion[]) {
+  getBullData(cotizaciones:Cotizacion[]): Par[] {
     const pares: any[] = [];
     const paresBear: any[] = [];
     for (let i = 0; i < cotizaciones.length - 1; i++) {
@@ -187,8 +207,7 @@ export class BullSpreadComponent {
         const puntoMuertoBear = callBaseMenor.base + costoInicial;
         const gananciaMaxima = callBaseMayor.base - callBaseMenor.base - costoInicial;
         const gananciaMaximaBear = costoInicialBear * (-1);
-
-        const par: any = {
+        const par: Par = {
           callBaseMayor,
           callBaseMenor,
           diferenciaEntreBases,
@@ -263,7 +282,7 @@ export class BullSpreadComponent {
     this.whatsapp.send("5491140290481", "Hola stocks");
   }
 
-  onOperate(bullData: any, subyacente: Cotizacion) {
+  onOperate(bullData: Par, subyacente: Cotizacion) {
     const callVenta: Cotizacion =  bullData.callBaseMayor;
     const callCompra: Cotizacion =  bullData.callBaseMenor;
 
@@ -272,14 +291,14 @@ export class BullSpreadComponent {
         cotizacion: callCompra,
         operation: 'buy',
         quantity: 0,
-        price: bullData.precioCompra,
+        price: String(bullData.precioCompra),
         estadoActual: 'nueva',
         useMarketValue: true
       }, {
         cotizacion: callVenta,
         operation: 'sell',
         quantity: 0,
-        price: bullData.precioVenta,
+        price: String(bullData.precioVenta),
         estadoActual: 'nueva',
         useMarketValue: true
       }],

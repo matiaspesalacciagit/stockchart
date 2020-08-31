@@ -12,7 +12,7 @@ export class OperateAssetComponent  {
   constructor(private fb: FormBuilder) {}
   editing: boolean;
   @Input() base: OperationBase;
-  @Output() updateBase = new EventEmitter<OperationForm>();
+  @Output() updateBase: EventEmitter<OperationForm> = new EventEmitter<OperationForm>();
   form = this.fb.group({
     quantity: [''],
     price: [''],

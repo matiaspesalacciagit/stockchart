@@ -32,7 +32,7 @@
     <p-tabView>
       <p-tabPanel header="Bull Spread">
         <app-result-table
-          [cotizaciones]="info"
+          [pares]="info"
           [cols]="colsBull"
           [sortField]="sortFieldBull"
           [title]="titleBull"
@@ -43,7 +43,7 @@
         </app-result-table>
       </p-tabPanel>
       <p-tabPanel header="Bear Spread">
-        <app-result-table [cotizaciones]="info" [cols]="colsBear" [sortField]="sortFieldBear" [title]="titleBear" [subTitle]="subTitleBear">
+        <app-result-table [pares]="info" [cols]="colsBear" [sortField]="sortFieldBear" [title]="titleBear" [subTitle]="subTitleBear">
         </app-result-table>
       </p-tabPanel>
     </p-tabView>
