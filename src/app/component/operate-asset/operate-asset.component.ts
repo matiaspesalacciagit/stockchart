@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, Input, EventEmitter, Output } from '@angular/core';
-import { OperationBase, OperationForm } from 'src/app/service/operate.service';
+import { OperationBase, OperationForm } from '../../service/operate.service';
 import { FormBuilder } from '@angular/forms';
 
 @Component({
@@ -21,6 +21,14 @@ export class OperateAssetComponent  {
 
   onSave() {
     this.updateBase.emit(this.form.value);
+    this.editing = false;
+  }
+
+  edit(){
+    this.editing = true;
+  }
+  
+  cancel() {
     this.editing = false;
   }
 }

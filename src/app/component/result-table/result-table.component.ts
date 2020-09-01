@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SortEvent } from 'primeng/api';
 import { Cotizacion } from 'src/app/model/model';
 import { Router } from '@angular/router';
+import { Par } from '../bull-spread/bull-spread.component';
 
 @Component({
   selector: 'app-result-table',
@@ -53,11 +54,11 @@ export class ResultTableComponent implements OnInit {
     });
   }
 
-  onWhatsApp(cotizacion: Cotizacion) {
+  onWhatsApp(cotizacion: any) {
     this.whatsapp.emit(cotizacion);
   }
 
-  onOperate(cotizacion: Cotizacion) {
+  onOperate(cotizacion: any) {
     this.operate.emit(cotizacion);
     //this.router.navigate(['/operation', { }]);
   }

@@ -102,30 +102,14 @@ export class OperateService {
   }
 
   private startSubyacente(subyacente: Cotizacion) {
-    this.subscriptions.add(
-      interval(20000)
-        .pipe(
-          startWith(subyacente),
-          switchMap(() => this.iolService.obtenerCotizacion('BCBA', subyacente.simbolo))
-        )
-        .subscribe(this.subyacente$)
-    );
+    this.iolService.obtenerCotizacion('BCBA', subyacente.simbolo).subscribe(this.subyacente$);
   }
 
   private startBases(bases: OperationBase[]) {
-    this.subscriptions.add(
-      interval(20000)
-        .pipe(
-          startWith(bases),
-          switchMap(() => {
-            const apiCalls = bases.map(element =>
-              this.iolService.obtenerCotizacion('BCBA', element.cotizacion.simbolo)
-                .pipe(map(cotizacion => ({ ...element, cotizacion })))
-            );
-            return combineLatest(apiCalls);
-          })
-        )
-        .subscribe(this.bases$)
+    const apiCalls = bases.map(element =>
+      this.iolService.obtenerCotizacion('BCBA', element.cotizacion.simbolo)
+        .pipe(map(cotizacion => ({ ...element, cotizacion })))
     );
+    combineLatest(apiCalls).subscribe(this.bases$)
   }
 }

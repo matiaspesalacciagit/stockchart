@@ -4,7 +4,9 @@
   <td>{{ base.quantity }}</td>
   <td>{{ base.price }}</td>
   <td>{{ base.estadoActual }}</td>
-  <td><button (click)="editing = true">edit</button></td>
+  <td>
+    <button (click)="edit()">edit</button>
+  </td>
 </tr>
 <tr *ngIf="editing">
   <td colspan="6">
@@ -21,15 +23,9 @@
         <label>Usar Valor de Mercado</label>
         <input formControlName="useMarketValue" />
       </div>
-      <button (click)="editing=false">Cancel</button> <button (click)="onSave()">OK</button>
+      <button (click)="cancel()">Cancel</button> 
+      <button (click)="onSave()">OK</button>
     </form>
   </td>
 </tr>
 
-<!-- operation: 'buy' | 'sell';
-cotizacion: Cotizacion;
-amount: number;
-price: string;
-numeroOperacion?: number;
-estadoActual?: string;
-} -->

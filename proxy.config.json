@@ -2,11 +2,13 @@
     "/token": {
         "target": "https://api.invertironline.com",
         "secure": false,
-        "changeOrigin": true
+        "changeOrigin": true,
+        "logLevel" : "debug"
     },
     "/api/*": {
         "target": "https://api.invertironline.com",
         "secure": false,
-        "changeOrigin": true
+        "changeOrigin": true,
+        "logLevel" : "debug"
     }
 }
