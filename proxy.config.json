@@ -3,12 +3,12 @@
         "target": "https://api.invertironline.com",
         "secure": false,
         "changeOrigin": true,
-        "logLevel" : "debug"
+        "logLevel" : "info"
     },
     "/api/*": {
         "target": "https://api.invertironline.com",
         "secure": false,
         "changeOrigin": true,
-        "logLevel" : "debug"
+        "logLevel" : "info"
     }
 }

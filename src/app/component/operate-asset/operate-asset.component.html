@@ -12,16 +12,14 @@
   <td colspan="6">
     <form [formGroup]="form">
       <div>
-        <label>Cantidad</label>
-        <input formControlName="quantity" type="number" />
-      </div>
-      <div>
-        <label>Precio</label>
-        <input formControlName="price" type="number" />
+        <input matInput placeholder="Quantity" formControlName="quantity" type="number" />
       </div>
       <div>
         <label>Usar Valor de Mercado</label>
-        <input formControlName="useMarketValue" />
+        <mat-checkbox formControlName="useMarketValue"></mat-checkbox>
+      </div>
+      <div *ngIf="!form.value.useMarketValue">
+        <input matInput placeholder="Price" formControlName="price" type="number" />
       </div>
       <button (click)="cancel()">Cancel</button> 
       <button (click)="onSave()">OK</button>

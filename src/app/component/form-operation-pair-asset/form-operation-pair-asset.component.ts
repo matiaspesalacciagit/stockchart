@@ -29,7 +29,8 @@ export class FormOperationPairAssetComponent implements OnInit, OnDestroy {
 
   onUpdateBase(operationUpdateData: OperationForm) {
    // TODO updatear config de service
-    // this.operateService.setOperation();
+    console.log(operationUpdateData);
+    //this.operateService.setOperation({this.bases, });
   }
 
   onOperate() {

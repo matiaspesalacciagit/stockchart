@@ -1,15 +1,17 @@
-<table *ngIf="bases">
-  <thead>
-    <tr>
+  <table *ngIf="bases">
+    <thead>
+      <tr>
         <td>Simbolo</td>
         <td>Operation</td>
         <td>Quantity</td>
         <td>Price</td>
         <td>Estado Actual</td>
         <td></td>
-    </tr>
-  </thead>
-  <tbody *ngFor="let base of bases" app-operate-asset (updateBase)="onUpdateBase($event)" [base]="base"></tbody>
+      </tr>
+    </thead>
+    <tbody *ngFor="let base of bases" app-operate-asset (updateBase)="onUpdateBase($event)" [base]="base"></tbody>
   </table>
-<button (click)="onOperate()">Ejecutar</button>
-<button (click)="onStop()">Stop!</button>
+  <div *ngIf="bases">
+    <button (click)="onOperate()">Ejecutar</button>
+    <button (click)="onStop()">Stop!</button>
+  </div>

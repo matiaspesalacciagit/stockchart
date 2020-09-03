@@ -16,7 +16,7 @@ export class OperateAssetComponent  {
   form = this.fb.group({
     quantity: [''],
     price: [''],
-    useMarketValue: [false]
+    useMarketValue: true
   });
 
   onSave() {
