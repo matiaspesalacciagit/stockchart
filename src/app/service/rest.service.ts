@@ -1,8 +1,38 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError, of } from 'rxjs';
 import { TokenIOL, TituloLess, Cotizacion, Opcion, Operacion } from '../model/model';
-import { map } from 'rxjs/operators'
+import { map, catchError, switchMap } from 'rxjs/operators'
+
+export interface ComprarResponse {
+  ok?: boolean;
+  messages?: { title: string; description: string }[];
+  numeroOperacion?: number;
+}
+
+export interface OperacionesReponse {
+  message?: string;
+  numero: number;
+  mercado: string;
+  simbolo: string;
+  moneda: string;
+  tipo: string;
+  fechaAlta: Date;
+  validez: Date;
+  fechaOperado?: any;
+  estadoActual: string;
+  estados: {
+    detalle: string,
+    fecha: string }[];
+  aranceles: any[];
+  operaciones: any[];
+  precio: number;
+  cantidad: number;
+  monto: number;
+  modalidad: string;
+}
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -132,9 +162,19 @@ export class RestService {
     if (this.token && this.token.access_token) {
       const autToken = 'Bearer ' + this.token.access_token;
       const url = this.endpoint + '/api/v2/operaciones' + number;
-      return this.http.get(url, { headers: new HttpHeaders({ Authorization: autToken }) });
+      return this.http.get<OperacionesReponse>(url, { headers: new HttpHeaders({ Authorization: autToken }) }).pipe(
+        catchError(error => throwError({message: 'Connection ERROR!'})),
+        switchMap(data => {
+          if (data.message) {
+            return throwError(data);
+          }
+          return of(data);
+        })
+      );
     }
-    return null;
+    return throwError({
+      message: 'ERROR - NO TOKEN'
+    });
   }
 
   comprar(mercado: string, simbolo: string, cantidad: string, precio: string, validez: string, plazo: string) {
@@ -142,9 +182,36 @@ export class RestService {
     if (this.token && this.token.access_token) {
       const autToken = 'Bearer ' + this.token.access_token;
       const url = this.endpoint + '/api/v2/operar/Comprar';
-      return this.http.post(url, orden, { headers: new HttpHeaders({ Authorization: autToken }) });
+      return this.http.post<ComprarResponse>(url, orden, { headers: new HttpHeaders({ Authorization: autToken }) }).pipe(
+        catchError(error =>
+          throwError({
+            ok: false,
+            messages: [
+              {
+                title: 'Connection ERROR!',
+                description: JSON.stringify(error),
+              }
+            ]
+          })
+        ),
+        switchMap(data => {
+          if (data.ok === false) {
+            return throwError(data);
+          }
+          return of(data);
+        })
+      );
     }
-    return null;
+    const errorResponse: ComprarResponse = {
+      ok: false,
+      messages: [
+        {
+          title: 'ERROR - NO TOKEN',
+          description: 'No se hay un token activo'
+        }
+      ]
+    };
+    return throwError(errorResponse);
   }
 
   vender(mercado: string, simbolo: string, cantidad: string, precio: string, validez: string, plazo: string) {
@@ -152,8 +219,35 @@ export class RestService {
     if (this.token && this.token.access_token) {
       const autToken = 'Bearer ' + this.token.access_token;
       const url = this.endpoint + '/api/v2/operar/Vender';
-      return this.http.post(url, orden, { headers: new HttpHeaders({ Authorization: autToken }) });
+      return this.http.post<ComprarResponse>(url, orden, { headers: new HttpHeaders({ Authorization: autToken }) }).pipe(
+        catchError(error =>
+          throwError({
+            ok: false,
+            messages: [
+              {
+                title: 'Connection ERROR!',
+                description: JSON.stringify(error),
+              }
+            ]
+          })
+        ),
+        switchMap(data => {
+          if (data.ok === false) {
+            return throwError(data);
+          }
+          return of(data);
+        })
+      );
     }
-    return null;
+    const errorResponse: ComprarResponse = {
+      ok: false,
+      messages: [
+        {
+          title: 'ERROR - NO TOKEN',
+          description: 'No se hay un token activo'
+        }
+      ]
+    };
+    return throwError(errorResponse);
   }
 }

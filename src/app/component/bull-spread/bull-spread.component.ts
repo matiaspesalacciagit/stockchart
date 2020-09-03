@@ -42,12 +42,8 @@ export interface Par {
   styleUrls: ['./bull-spread.component.scss']
 })
 export class BullSpreadComponent {
-  //  @Input('activoSubyacente') @AsObservable() activoSubyacente$: Observable<Cotizacion>;
-
-  // BCBA GGAL
-
   constructor(
-    private iolService: RestService,
+    private service: RestService,
     private fb: FormBuilder,
     public dateService: DateService,
     private whatsapp: WhatsAppService,
@@ -107,35 +103,13 @@ export class BullSpreadComponent {
     })
   );
 
-  // ultimate courses => mgalante@gmail.com / Baile786u
-  /*
-  simboloActivoSubyacente$ = this.form.get('subyacente').valueChanges.pipe(
-    startWith(this.form.get('subyacente').value)
-  );
-
-  activoSubyacente$ = this.simboloActivoSubyacente$.pipe(
-    switchMap(simbolo =>
-      this.iolService.obtenerCotizacion('BCBA', simbolo)
-    )
-  );
-*/
-
-// NO VA;
   currentSubyacenteSubject = new BehaviorSubject<string>(null); 
   currentSubyacente$ =  this.currentSubyacenteSubject.asObservable();
-
-  // currentSubyacenteValue$ = this.currentSubyacente$.pipe(
-  //   distinctUntilChanged(),
-  //   switchMap(subyacente =>
-  //     this.iolService.obtenerCotizacion('BCBA', subyacente)
-  //   )
-  // );
-
 
 
   subyacente$ = merge(this.search$, this.autorefesh$).pipe(
     switchMap(() =>
-      this.iolService.obtenerCotizacion('BCBA', this.form.get('subyacente').value)
+      this.service.obtenerCotizacion('BCBA', this.form.get('subyacente').value)
     ),
     publishReplay(1),
     refCount()
@@ -255,11 +229,11 @@ export class BullSpreadComponent {
     if(cacheOpciones){
       return of(JSON.parse(cacheOpciones));
     } */
-    return this.iolService.buscarOpciones('BCBA', activoSubyacente.simbolo).pipe(
+    return this.service.buscarOpciones('BCBA', activoSubyacente.simbolo).pipe(
       map(opciones => opciones.filter(opcion => this.applyFilters(opcion.simbolo, activoSubyacente, month))),
       switchMap(opciones => {
         const apiCalls = opciones.map(element =>
-          this.iolService.obtenerCotizacion('BCBA', element.simbolo).pipe(
+          this.service.obtenerCotizacion('BCBA', element.simbolo).pipe(
             map(opcion => ({
               ...opcion,
               base: Number(element.simbolo.match(/-?\d*\.?\d+/g))

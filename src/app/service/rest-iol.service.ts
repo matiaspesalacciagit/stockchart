@@ -121,7 +121,9 @@ export class RestIolService {
       const url = `${this.endpoint}/api/v2/${mercado}/Titulos/${simbolo}/Cotizacion`;
       const headers = new HttpHeaders({ Authorization });
 
-      return this.http.get<Cotizacion>(url, { headers }).pipe(map(cotizacion => ({ ...cotizacion, simbolo })));
+      return this.http.get<Cotizacion>(url, { headers }).pipe(
+        map( cotizacion => ({...cotizacion, simbolo }) 
+      ));
     }
     return null;
   }
