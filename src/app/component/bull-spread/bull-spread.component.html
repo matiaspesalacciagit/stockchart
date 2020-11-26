@@ -1,53 +1,33 @@
-<mat-card>
-  <form [formGroup]="form">
-    <mat-form-field>
-      <mat-label>Subyacente</mat-label>
-      <input matInput formControlName="subyacente" />
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Mes</mat-label>
-      <mat-select formControlName="month" *ngIf="dateService.months$ | async as months">
-        <mat-option *ngFor="let month of months" [value]="month.value">
-          {{ month.label }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Lotes</mat-label>
-      <input matInput formControlName="loteOperar" />
-    </mat-form-field>
-    <mat-slide-toggle class="example-margin" formControlName="autorefresh">
-      AutoReload
-    </mat-slide-toggle>
+<app-bull-spread-form (search)="onSearch($event)"></app-bull-spread-form>
 
-    <button mat-button (click)="search()">Analizar</button>
-    <button mat-button (click)="clearCache()">Limpiar Chache</button>
-  </form>
-</mat-card>
-<ng-container *ngIf="subyacente$ | async as subyacente">
+<ng-container *ngIf="bullSpreadSubyacenteData$ | async as subyacente">
   <app-detail-asset [subyacente]="subyacente"></app-detail-asset>
-
-  <ng-container *ngIf="info$ | async as info">
-    <h3 class="first">Estrategias</h3>
-    <p-tabView>
-      <p-tabPanel header="Bull Spread">
-        <app-result-table
-          [pares]="info"
-          [cols]="colsBull"
-          [sortField]="sortFieldBull"
-          [title]="titleBull"
-          [subTitle]="subTitleBull"
-          (operate)="onOperate($event, subyacente)"
-          (whatsapp)="onWhatsapp($event)"
-        >
-        </app-result-table>
-      </p-tabPanel>
-      <p-tabPanel header="Bear Spread">
-        <app-result-table [pares]="info" [cols]="colsBear" [sortField]="sortFieldBear" [title]="titleBear" [subTitle]="subTitleBear">
-        </app-result-table>
-      </p-tabPanel>
-    </p-tabView>
-  </ng-container>
 </ng-container>
+
+<ng-container *ngIf="bullSpreadPairsData$ | async as info">
+  <h3 class="first">Estrategias</h3>
+  <p-tabView>
+    <p-tabPanel header="Bull Spread">
+      <app-result-table
+        [pares]="info"
+        [cols]="colsBull"
+        [sortField]="sortFieldBull"
+        [title]="titleBull"
+        [subTitle]="subTitleBull"
+        (operate)="onOperate($event, null)"
+        (whatsapp)="onWhatsapp($event)"
+      >
+      </app-result-table>
+    </p-tabPanel>
+    <p-tabPanel header="Bear Spread">
+      <app-result-table [pares]="info" [cols]="colsBear" [sortField]="sortFieldBear" [title]="titleBear" [subTitle]="subTitleBear">
+      </app-result-table>
+    </p-tabPanel>
+  </p-tabView>
+</ng-container>
+
+
+  
+ 
 <app-form-operation-pair-asset></app-form-operation-pair-asset>
 <!-- app-buy-asset></app-buy-asset -->

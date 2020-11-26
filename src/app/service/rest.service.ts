@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TokenIOL, TituloLess, Cotizacion, Opcion, Operacion } from '../model/model';
 import { map } from 'rxjs/operators'
+import { getMatInputUnsupportedTypeError } from '@angular/material/input';
 @Injectable({
   providedIn: 'root'
 })
@@ -27,6 +28,21 @@ export class RestService {
     localStorage.setItem('cred', JSON.stringify({username: username, password: password}));
     return this.http.post(url, body.toString(), { headers });
   }
+
+  //new
+  getPrice(mercado: string, simbolo: string): Observable<Cotizacion> {
+      if (this.token && this.token.access_token) {
+        const Authorization = `Bearer ${this.token.access_token}`;
+        const url = `${this.endpoint}/api/v2/${mercado}/Titulos/${simbolo}/Cotizacion`;
+        const headers = new HttpHeaders({ Authorization });
+  
+        return this.http.get<Cotizacion>(url, { headers }).pipe(
+          map( cotizacion => ({...cotizacion, simbolo }) 
+        ));
+      }
+      throw new Error('No hay token');
+  }
+  // end new
 
   setUserLogged(): any {
     localStorage.setItem('token', JSON.stringify(this.token));

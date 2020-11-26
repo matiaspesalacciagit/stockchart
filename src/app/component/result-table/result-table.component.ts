@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy
 import { SortEvent } from 'primeng/api';
 import { Cotizacion } from 'src/app/model/model';
 import { Router } from '@angular/router';
-import { Par } from '../bull-spread/bull-spread.component';
+import { Par } from 'src/app/model/bull-spread-pair';
 
 @Component({
   selector: 'app-result-table',

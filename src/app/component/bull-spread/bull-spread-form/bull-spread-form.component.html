@@ -1,0 +1,25 @@
+<mat-card>
+    <form [formGroup]="form">
+      <mat-form-field>
+        <mat-label>Subyacente</mat-label>
+        <input matInput formControlName="subyacente" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Mes</mat-label>
+        <mat-select formControlName="month">
+          <mat-option *ngFor="let month of dateService.months" [value]="month.value">
+            {{ month.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Lotes</mat-label>
+        <input matInput formControlName="loteOperar" />
+      </mat-form-field>
+      <!-- <mat-slide-toggle class="example-margin" formControlName="autorefresh">
+        AutoReload
+      </mat-slide-toggle> -->
+  
+      <button mat-button (click)="onSearch()">Analizar</button>
+    </form>
+  </mat-card>

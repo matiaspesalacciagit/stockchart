@@ -23,6 +23,7 @@ import { BuyAssetComponent } from './component/buy-asset/buy-asset.component';
 import { FormOperationPairAssetComponent } from './component/form-operation-pair-asset/form-operation-pair-asset.component';
 import { OperateAssetComponent } from './component/operate-asset/operate-asset.component';
 import { DetailAssetComponent } from './component/detail-asset/detail-asset.component';
+import { BullSpreadFormComponent } from './component/bull-spread/bull-spread-form/bull-spread-form.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { DetailAssetComponent } from './component/detail-asset/detail-asset.comp
     FormOperationPairAssetComponent,
     OperateAssetComponent,
     DetailAssetComponent,
+    BullSpreadFormComponent,
   ],
   imports: [
     BrowserModule,
