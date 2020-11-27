@@ -7,7 +7,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { PageAssetQuoteComponent } from './component/page-asset-quote/page-asset-quote.component';
 import { PageLoginComponent } from './component/page-login/page-login.component';
 import { MaterialModule } from './material/material.module';
 import { ChartService } from './service/chart.service';
@@ -29,7 +28,6 @@ import { BullSpreadFormComponent } from './component/bull-spread/bull-spread-for
   declarations: [
     AppComponent,
     PageLoginComponent,
-    PageAssetQuoteComponent,
     BullSpreadComponent,
     ResultTableComponent,
     SellAssetComponent,
