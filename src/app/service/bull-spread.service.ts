@@ -1,81 +1,71 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, combineLatest } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-import { Cotizacion, Puntas } from 'src/app/model/model';
+import { map } from 'rxjs/operators';
+import { Cotizacion, Opcion, Puntas } from 'src/app/model/model';
 import { BullSpreadFormData } from '../model/bull-spread-form-data';
 import { Par } from '../model/bull-spread-pair';
+import { DateService } from './date.service';
 import { RestService } from './rest.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class BullSpreadService {
-  constructor(private iolService: RestService) {}
+  constructor(private iolService: RestService, private dateService: DateService) {}
 
-  private bullSpreadFormData$: BehaviorSubject<BullSpreadFormData> = new BehaviorSubject<BullSpreadFormData>(
-    null
-  );
+  private bullSpreadFormData$: BehaviorSubject<BullSpreadFormData> = new BehaviorSubject<BullSpreadFormData>(null);
 
   bullSpreadPairsData$: BehaviorSubject<Par[]> = new BehaviorSubject<Par[]>([]);
   bullSpreadSubyacenteData$: BehaviorSubject<Cotizacion> = new BehaviorSubject<Cotizacion>(null);
-
 
   setBullSpreadFormData(bullSpreadFormData: BullSpreadFormData) {
     this.bullSpreadFormData$.next(bullSpreadFormData);
   }
 
-  async getOnce() {   
+  async getOnce() {
     this.bullSpreadPairsData$.next([]);
     this.bullSpreadSubyacenteData$.next(null);
-
-    const subyacentePrice = await this.iolService
-      .getPrice('BCBA', this.bullSpreadFormData$.value.subyacenteTicker)
-      .toPromise();
-    
+    const subyacentePrice = await this.iolService.getPrice('BCBA', this.bullSpreadFormData$.value.subyacenteTicker).toPromise();
     this.bullSpreadSubyacenteData$.next(subyacentePrice);
-
-    const prices = await this.getOptionsData(
-      subyacentePrice,
-      this.bullSpreadFormData$.value.monthCode
-    );
-    
+    const prices = await this.getOptionsData(subyacentePrice, this.bullSpreadFormData$.value.monthCode);
     const datas = this.getBullData(prices);
-
     this.bullSpreadPairsData$.next(datas);
   }
- 
-  private async getOptionsData(activoSubyacente: Cotizacion, month: string) {
-    debugger; 
-    let opciones = await this.iolService.buscarOpciones('BCBA', activoSubyacente.simbolo).toPromise();
-    opciones = opciones.filter(opcion => this.applyFilters(opcion.simbolo, activoSubyacente, month));
 
-    const apiCalls = opciones.map((element) =>
-            this.iolService.obtenerCotizacion('BCBA', element.simbolo).pipe(
-              map((opcion) => ({
-                ...opcion,
-                base: Number(element.simbolo.match(/-?\d*\.?\d+/g)),
-              }))
-            )
+  private async getOptionsData(activoSubyacente: Cotizacion, month: string) {
+    let opciones = await this.iolService.buscarOpciones('BCBA', activoSubyacente.simbolo).toPromise();
+
+    opciones = opciones.filter(opcion => this.applyFilters(opcion, opcion.simbolo, activoSubyacente, month));
+    const apiCalls = opciones.map(element =>
+      this.iolService.obtenerCotizacion('BCBA', element.simbolo).pipe(
+        map(opcion => ({
+          ...opcion,
+          base: Number(element.descripcion.match(/^(Call|Put) ([A-Z]{4}) ([0-9.]+) Vencimiento: (\d{2})\/(\d{2})\/(\d{4})$/)[3])
+        }))
+      )
     );
-          
+
     const result = await combineLatest(apiCalls).toPromise();
     return result;
   }
 
-  private applyFilters(
-    symbol: string,
-    activoSubyacente: Cotizacion,
-    month: string
-  ): boolean {
-    const belongsToSelectedMonth = symbol.substr(-2).indexOf(month) !== -1;
-    const isCall = symbol.substring(3, 4) === 'C';
-    const base = Number(symbol.match(/-?\d*\.?\d+/g));
+  private applyFilters(opcion: Opcion, symbol: string, activoSubyacente: Cotizacion, month: string): boolean {
+    // TODO El servicio debe proveer las respuestas ya masticadas
+    const decriptionMatches = opcion.descripcion.match(/^(Call|Put) ([A-Z]{4}) ([0-9.]+) Vencimiento: (\d{2})\/(\d{2})\/(\d{4})$/);
+    if (!decriptionMatches) {
+      throw new Error('El formato de IOL cambió');
+    }
+    const base = Number(decriptionMatches[3]);
+
+    // TODO refector
+    const belongsToSelectedMonth = decriptionMatches[5] === this.dateService.months.find(x => x.value === month).number;
+
+    const isCall = opcion.tipoOpcion === 'Call';
     const lastPrice = activoSubyacente.ultimoPrecio;
     const moneyOk = Math.abs(base - lastPrice) / lastPrice <= 0.1;
-    return belongsToSelectedMonth && isCall /* && moneyOk */;
+    return belongsToSelectedMonth && isCall && moneyOk;
   }
 
- 
   private getBullData(cotizaciones: Cotizacion[]): Par[] {
     const pares: any[] = [];
     const paresBear: any[] = [];
@@ -88,12 +78,7 @@ export class BullSpreadService {
         const precioCompraBear = this.getCompraReal(callBaseMayor.puntas, 1);
         const precioVentaBear = this.getVentaReal(callBaseMenor.puntas, 1);
 
-        if (
-          !precioCompra ||
-          !precioVenta ||
-          !precioCompraBear ||
-          !precioVentaBear
-        ) {
+        if (!precioCompra || !precioVenta || !precioCompraBear || !precioVentaBear) {
           continue;
         }
 
@@ -102,23 +87,16 @@ export class BullSpreadService {
         const costoInicialBear = precioCompraBear - precioVentaBear;
         const puntoMuerto = callBaseMenor.base + costoInicialBear;
         const puntoMuertoBear = callBaseMenor.base + costoInicial;
-        const gananciaMaxima =
-          callBaseMayor.base - callBaseMenor.base - costoInicial;
+        const gananciaMaxima = callBaseMayor.base - callBaseMenor.base - costoInicial;
         const gananciaMaximaBear = costoInicialBear * -1;
         const par: Par = {
           callBaseMayor,
           callBaseMenor,
           diferenciaEntreBases,
-          puntaje:
-            diferenciaEntreBases !== 0
-              ? costoInicial / diferenciaEntreBases
-              : 0,
+          puntaje: diferenciaEntreBases !== 0 ? costoInicial / diferenciaEntreBases : 0,
           puntajeBear: 1 + costoInicialBear / diferenciaEntreBases,
           //puntajeBull: costoInicial / diferenciaEntreBases,
-          gananciaPorPesoInvertido:
-            costoInicial - 1 !== 0
-              ? diferenciaEntreBases / costoInicial - 1
-              : 0,
+          gananciaPorPesoInvertido: costoInicial - 1 !== 0 ? diferenciaEntreBases / costoInicial - 1 : 0,
           costoInicial,
           costoInicialBear,
           //puntoMuerto,
@@ -131,7 +109,7 @@ export class BullSpreadService {
           //callAComprarBase: callAComprar.base,
           //callALanzarBase: callALanzar.base,
           simboloCompra: callBaseMenor.simbolo,
-          simboloVenta: callBaseMayor.simbolo,
+          simboloVenta: callBaseMayor.simbolo
         };
 
         // if(par.puntaje > 0.5) {
