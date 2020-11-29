@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import { BullSpreadFormData } from 'src/app/model/bull-spread-form-data';
 import { BullSpreadService } from 'src/app/service/bull-spread.service';
@@ -7,27 +6,17 @@ import { WhatsAppService } from 'src/app/service/whats-app.service';
 import { Cotizacion } from 'src/app/model/model';
 import { Par } from 'src/app/model/bull-spread-pair';
 
-
 @Component({
   selector: 'app-bull-spread',
   templateUrl: './bull-spread.component.html',
-  styleUrls: ['./bull-spread.component.scss'],
+  styleUrls: ['./bull-spread.component.scss']
 })
 export class BullSpreadComponent {
-
-  constructor(
-    private whatsapp: WhatsAppService,
-    private operateService: OperateService,
-    private bullSpreadService: BullSpreadService
-  ) {}
+  constructor(private whatsapp: WhatsAppService, private operateService: OperateService, private bullSpreadService: BullSpreadService) {}
 
   bullSpreadPairsData$ = this.bullSpreadService.bullSpreadPairsData$;
   bullSpreadSubyacenteData$ = this.bullSpreadService.bullSpreadSubyacenteData$;
-
-  onSearch(bullSpreadFormData: BullSpreadFormData){
-    this.bullSpreadService.setBullSpreadFormData(bullSpreadFormData);
-    this.bullSpreadService.getOnce();
-  }
+  bullSpreadFormData$ = this.bullSpreadService.bullSpreadFormData$;
 
   titleBull = 'Bull Spread';
   subTitleBull = 'Cotizaciones';
@@ -45,7 +34,7 @@ export class BullSpreadComponent {
     { field: 'ganancaMaxima', header: 'Ganancia Máxima' },
     { field: 'gananciaPorPesoInvertido', header: 'Ganancia x $' },
     { field: 'simboloCompra', header: 'Simb Compra' },
-    { field: 'simboloVenta', header: 'Simb Vta' },
+    { field: 'simboloVenta', header: 'Simb Vta' }
   ];
 
   colsBear: any[] = [
@@ -57,20 +46,19 @@ export class BullSpreadComponent {
     { field: 'ganancaMaximaBear', header: 'Ganancia Máxima' },
     { field: 'gananciaPorPesoInvertido', header: 'Ganancia x $' },
     { field: 'simboloCompra', header: 'Simb Vta' },
-    { field: 'simboloVenta', header: 'Simb Compra' },
+    { field: 'simboloVenta', header: 'Simb Compra' }
   ];
 
-
-  opcionesFiltradas: Cotizacion[] = [];
-
-
-
+  onSearch(bullSpreadFormData: BullSpreadFormData) {
+    this.bullSpreadService.setBullSpreadFormData(bullSpreadFormData);
+    this.bullSpreadService.getOnce();
+  }
 
   onWhatsapp(cotizacion: any) {
     this.whatsapp.send('5491140290481', 'Hola stocks');
   }
 
-  onOperate(bullData: Par, subyacente: Cotizacion) {
+  async onOperate(bullData: Par, subyacente: Cotizacion) {
     const callVenta: Cotizacion = bullData.callBaseMayor;
     const callCompra: Cotizacion = bullData.callBaseMenor;
 
@@ -79,23 +67,21 @@ export class BullSpreadComponent {
         {
           cotizacion: callCompra,
           operation: 'buy',
-          quantity: 0,
+          quantity: this.bullSpreadFormData$.value.lotesQuantity,
           price: String(bullData.precioCompra),
           estadoActual: 'nueva',
-          useMarketValue: true,
+          useMarketValue: true
         },
         {
           cotizacion: callVenta,
           operation: 'sell',
-          quantity: 0,
+          quantity: this.bullSpreadFormData$.value.lotesQuantity,
           price: String(bullData.precioVenta),
           estadoActual: 'nueva',
-          useMarketValue: true,
-        },
+          useMarketValue: true
+        }
       ],
-      subyacente,
+      subyacente
     });
   }
-
-
 }

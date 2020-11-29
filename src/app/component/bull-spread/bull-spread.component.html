@@ -1,33 +1,31 @@
 <app-bull-spread-form (search)="onSearch($event)"></app-bull-spread-form>
 
+<app-form-operation-pair-asset></app-form-operation-pair-asset>
+
 <ng-container *ngIf="bullSpreadSubyacenteData$ | async as subyacente">
   <app-detail-asset [subyacente]="subyacente"></app-detail-asset>
+
+  <ng-container *ngIf="bullSpreadPairsData$ | async as info">
+    <h3 class="first">Estrategias</h3>
+    <p-tabView>
+      <p-tabPanel header="Bull Spread">
+        <app-result-table
+          [pares]="info"
+          [cols]="colsBull"
+          [sortField]="sortFieldBull"
+          [title]="titleBull"
+          [subTitle]="subTitleBull"
+          (operate)="onOperate($event, subyacente)"
+          (whatsapp)="onWhatsapp($event)"
+        >
+        </app-result-table>
+      </p-tabPanel>
+      <p-tabPanel header="Bear Spread">
+        <app-result-table [pares]="info" [cols]="colsBear" [sortField]="sortFieldBear" [title]="titleBear" [subTitle]="subTitleBear">
+        </app-result-table>
+      </p-tabPanel>
+    </p-tabView>
+  </ng-container>
 </ng-container>
 
-<ng-container *ngIf="bullSpreadPairsData$ | async as info">
-  <h3 class="first">Estrategias</h3>
-  <p-tabView>
-    <p-tabPanel header="Bull Spread">
-      <app-result-table
-        [pares]="info"
-        [cols]="colsBull"
-        [sortField]="sortFieldBull"
-        [title]="titleBull"
-        [subTitle]="subTitleBull"
-        (operate)="onOperate($event, null)"
-        (whatsapp)="onWhatsapp($event)"
-      >
-      </app-result-table>
-    </p-tabPanel>
-    <p-tabPanel header="Bear Spread">
-      <app-result-table [pares]="info" [cols]="colsBear" [sortField]="sortFieldBear" [title]="titleBear" [subTitle]="subTitleBear">
-      </app-result-table>
-    </p-tabPanel>
-  </p-tabView>
-</ng-container>
-
-
-  
- 
-<app-form-operation-pair-asset></app-form-operation-pair-asset>
 <!-- app-buy-asset></app-buy-asset -->

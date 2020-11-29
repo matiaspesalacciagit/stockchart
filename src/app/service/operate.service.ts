@@ -13,7 +13,7 @@ export interface OperationForm {
 }
 
 export interface OperationBase {
-  operation: 'buy' | 'sell'; 
+  operation: 'buy' | 'sell';
   cotizacion: Cotizacion;
   quantity: number;
   price: string;
@@ -46,6 +46,14 @@ export class OperateService {
     // this.startBases({...this.bases$.value, ...bases});
   }
 
+  updateBase(operationUpdateData: OperationForm, base: OperationBase) {
+    base.quantity = operationUpdateData.quantity;
+    if (!operationUpdateData.useMarketValue) {
+      // TODO Ojo que el precio es un string
+      base.price = operationUpdateData.price.toString() ;
+    }
+  }
+
   destroy() {
     this.subscriptions.unsubscribe();
   }
@@ -74,29 +82,35 @@ export class OperateService {
   // TODO poner este codigo dentro del comprar de service
   private createBuyOrder(operationBase: OperationBase) {
     const validez = this.datePipe.transform(new Date(), `yyyy-MM-dd'T'HH:mm:ss.SSSZ`);
-    return this.service
-      .comprar('BCBA',
-        operationBase.cotizacion.simbolo.toUpperCase(),
-        String(operationBase.quantity), operationBase.price, validez.toString(), 't1'
-      );
+    return this.service.comprar(
+      'BCBA',
+      operationBase.cotizacion.simbolo.toUpperCase(),
+      String(operationBase.quantity),
+      operationBase.price,
+      validez.toString(),
+      't1'
+    );
   }
 
   // TODO poner este codigo dentro del vender de service
   private createSellOrder(operationBase: OperationBase) {
     //  const messagesOperatoria = [{ message: '' }];
     const validez = this.datePipe.transform(new Date(), `yyyy-MM-dd'T'HH:mm:ss.SSSZ`);
-    return this.service
-      .vender('BCBA',
-        operationBase.cotizacion.simbolo.toUpperCase(),
-        String(operationBase.quantity), operationBase.price, validez.toString(), 't1'
-      );
+    return this.service.vender(
+      'BCBA',
+      operationBase.cotizacion.simbolo.toUpperCase(),
+      String(operationBase.quantity),
+      operationBase.price,
+      validez.toString(),
+      't1'
+    );
   }
 
   private startCheckingOrder(numeroOperacion) {
     return interval(10000).pipe(
       startWith(-1),
       switchMap(() => this.service.operaciones(numeroOperacion)),
-      takeWhile(operacion => operacion.estadoActual !== 'terminada' ),
+      takeWhile(operacion => operacion.estadoActual !== 'terminada'),
       filter(operacion => operacion.estadoActual === 'terminada')
     );
   }
@@ -107,9 +121,8 @@ export class OperateService {
 
   private startBases(bases: OperationBase[]) {
     const apiCalls = bases.map(element =>
-      this.service.obtenerCotizacion('BCBA', element.cotizacion.simbolo)
-        .pipe(map(cotizacion => ({ ...element, cotizacion })))
+      this.service.obtenerCotizacion('BCBA', element.cotizacion.simbolo).pipe(map(cotizacion => ({ ...element, cotizacion })))
     );
-    combineLatest(apiCalls).subscribe(this.bases$)
+    combineLatest(apiCalls).subscribe(this.bases$);
   }
 }

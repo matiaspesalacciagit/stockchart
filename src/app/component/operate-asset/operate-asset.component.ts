@@ -3,12 +3,13 @@ import { OperationBase, OperationForm } from '../../service/operate.service';
 import { FormBuilder } from '@angular/forms';
 
 @Component({
+  // tslint:disable-next-line: component-selector
   selector: '[app-operate-asset]',
   templateUrl: './operate-asset.component.html',
   styleUrls: ['./operate-asset.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class OperateAssetComponent  {
+export class OperateAssetComponent {
   constructor(private fb: FormBuilder) {}
   editing: boolean;
   @Input() base: OperationBase;
@@ -24,10 +25,10 @@ export class OperateAssetComponent  {
     this.editing = false;
   }
 
-  edit(){
+  edit() {
     this.editing = true;
   }
-  
+
   cancel() {
     this.editing = false;
   }

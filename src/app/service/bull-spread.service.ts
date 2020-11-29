@@ -5,6 +5,7 @@ import { Cotizacion, Opcion, Puntas } from 'src/app/model/model';
 import { BullSpreadFormData } from '../model/bull-spread-form-data';
 import { Par } from '../model/bull-spread-pair';
 import { DateService } from './date.service';
+import { OperateService } from './operate.service';
 import { RestService } from './rest.service';
 
 @Injectable({
@@ -13,7 +14,7 @@ import { RestService } from './rest.service';
 export class BullSpreadService {
   constructor(private iolService: RestService, private dateService: DateService) {}
 
-  private bullSpreadFormData$: BehaviorSubject<BullSpreadFormData> = new BehaviorSubject<BullSpreadFormData>(null);
+  bullSpreadFormData$: BehaviorSubject<BullSpreadFormData> = new BehaviorSubject<BullSpreadFormData>(null);
 
   bullSpreadPairsData$: BehaviorSubject<Par[]> = new BehaviorSubject<Par[]>([]);
   bullSpreadSubyacenteData$: BehaviorSubject<Cotizacion> = new BehaviorSubject<Cotizacion>(null);
